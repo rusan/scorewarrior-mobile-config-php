@@ -1,0 +1,12 @@
+{
+    "backend_jsonrpc_url": "https://api.application.com/jsonrpc/v2",
+    "notifications_jsonrpc_url": "https://notifications.application.com/jsonrpc/v1",
+    "assets_cdn_urls": [
+        "https://dhm.cdn.application.com",
+        "https://ehz.cdn.application.com"
+    ],
+    "definitions_cdn_urls": [
+        "https://fmp.cdn.application.com",
+        "https://eau.cdn.application.com"
+    ]
+}

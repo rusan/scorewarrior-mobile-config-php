@@ -1,0 +1,102 @@
+<?php
+declare(strict_types=1);
+
+namespace Tests\Unit\Services;
+
+use App\Config\DependencyNames;
+use App\Services\DependencyTypeInterface;
+use App\Services\DependencyTypeRegistry;
+use PHPUnit\Framework\MockObject\MockObject;
+use Tests\TestCase;
+
+class DependencyTypeRegistryTest extends TestCase
+{
+    private DependencyTypeRegistry $registry;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        
+        $this->registry = new DependencyTypeRegistry();
+    }
+
+    public function testConstructorRegistersDefaultTypes(): void
+    {
+        $names = $this->registry->getNames();
+        
+        $this->assertContains(DependencyNames::ASSETS, $names);
+        $this->assertContains(DependencyNames::DEFINITIONS, $names);
+        $this->assertCount(2, $names);
+    }
+
+    public function testGetExistingType(): void
+    {
+        $assetsType = $this->registry->get(DependencyNames::ASSETS);
+        $definitionsType = $this->registry->get(DependencyNames::DEFINITIONS);
+        
+        $this->assertNotNull($assetsType);
+        $this->assertNotNull($definitionsType);
+        $this->assertEquals(DependencyNames::ASSETS, $assetsType->getName());
+        $this->assertEquals(DependencyNames::DEFINITIONS, $definitionsType->getName());
+    }
+
+    public function testGetNonExistentType(): void
+    {
+        $result = $this->registry->get('nonexistent');
+        
+        $this->assertNull($result);
+    }
+
+    public function testRegisterNewType(): void
+    {
+        $mockType = $this->createMock(DependencyTypeInterface::class);
+        $mockType->method('getName')->willReturn('testType');
+        
+        $this->registry->register($mockType);
+        
+        $result = $this->registry->get('testType');
+        $this->assertSame($mockType, $result);
+        
+        $names = $this->registry->getNames();
+        $this->assertContains('testType', $names);
+        $this->assertCount(3, $names); // 2 default + 1 new
+    }
+
+    public function testRegisterOverwriteExistingType(): void
+    {
+        $mockType = $this->createMock(DependencyTypeInterface::class);
+        $mockType->method('getName')->willReturn(DependencyNames::ASSETS);
+        
+        $originalType = $this->registry->get(DependencyNames::ASSETS);
+        $this->registry->register($mockType);
+        $newType = $this->registry->get(DependencyNames::ASSETS);
+        
+        $this->assertNotSame($originalType, $newType);
+        $this->assertSame($mockType, $newType);
+        
+
+        $this->assertCount(2, $this->registry->getNames());
+    }
+
+    public function testGetAll(): void
+    {
+        $allTypes = $this->registry->getAll();
+        
+        $this->assertIsArray($allTypes);
+        $this->assertCount(2, $allTypes);
+        $this->assertArrayHasKey(DependencyNames::ASSETS, $allTypes);
+        $this->assertArrayHasKey(DependencyNames::DEFINITIONS, $allTypes);
+        
+        foreach ($allTypes as $type) {
+            $this->assertInstanceOf(DependencyTypeInterface::class, $type);
+        }
+    }
+
+    public function testGetNames(): void
+    {
+        $names = $this->registry->getNames();
+        
+        $this->assertIsArray($names);
+        $this->assertEquals([DependencyNames::ASSETS, DependencyNames::DEFINITIONS], $names);
+    }
+}

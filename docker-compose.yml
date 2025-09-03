@@ -1,0 +1,22 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      APP_LOG_LEVEL: "info"
+      APP_ENV: "dev"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src:/local/src:ro
+      - ./tests:/local/tests:ro
+      - ./scripts:/local/scripts:ro
+      - ./vendor:/local/vendor
+      - ./data:${DATA_PATH:-/local/data}:ro
+    networks: [ web ]
+
+networks:
+  web: {}

@@ -1,0 +1,262 @@
+{
+  "android": [
+    {
+      "version": "10.7.669",
+      "hash": "3b6d96686602b4e8f96e023b4715963e996d28d4acf89030d2a6e8dad51fecb1"
+    },
+    {
+      "version": "15.0.303",
+      "hash": "02ad3ffe2ff15f036442f20c99c4779765c13bbb30352870fcc28b5874a9648a"
+    },
+    {
+      "version": "11.4.170",
+      "hash": "e92a88c431dccfd923091704abfd7f77590fc01f182bf67444d7794111d89872"
+    },
+    {
+      "version": "10.9.804",
+      "hash": "a6a061a4d86902181875fa7c44efa86a4f407ec20fabf98c52d3d4f36e1637aa"
+    },
+    {
+      "version": "14.2.439",
+      "hash": "023b969968c58b3523c5cc80f7a0c38b060e34d460c9b90ba4c2198b32a79f17"
+    },
+    {
+      "version": "13.7.73",
+      "hash": "6f66b4f85ad280bf0a3fa2e61104548ecb513b0f6fc4277a716574bc5fbd7aa3"
+    },
+    {
+      "version": "11.0.708",
+      "hash": "f7755a6198c6c31d40a8a0875753410548656a449a423e5fa36d84d59d4bfca3"
+    },
+    {
+      "version": "15.6.342",
+      "hash": "c55dbd40f6dad5c4c089985dea92f0bcc2ce3c680d8c0ee077e59f9259a6ad02"
+    },
+    {
+      "version": "14.10.976",
+      "hash": "b3232e14b8071483baf4edd4b30d0ec5b282ba17232d61447fa2e46f3a4069f3"
+    },
+    {
+      "version": "12.4.611",
+      "hash": "a7dabbca8f451f9310234779ae1eab65dd13401c696b272c74c53896b1a4a23a"
+    },
+    {
+      "version": "11.8.245",
+      "hash": "339c72cc2a8cc7d7d50369ae4cb365012529c73510586dd65f9f24d8b7bd91e6"
+    },
+    {
+      "version": "13.2.112",
+      "hash": "d89273a88978a82bba54b6dcf9b98be9713abb9516ec06d973e1f689b159eabc"
+    },
+    {
+      "version": "12.6.746",
+      "hash": "67a4562ed24405357b1b01fde3db8a066b1991fbbb6c84109fd01cbe5a42829b"
+    },
+    {
+      "version": "10.10.381",
+      "hash": "3820ad42b5984c23e17cd5e21e381ebac5bbe32f8485727eaafa1ab5fc50dba2"
+    },
+    {
+      "version": "15.4.15",
+      "hash": "6169797411d64667179373a0ab0e078735c31c622e221f747f4582a94f49276b"
+    },
+    {
+      "version": "13.8.650",
+      "hash": "b5a23088d7079889f279731d36bc2b5c47165d6efb90b749fc3cc5b642095ca8"
+    },
+    {
+      "version": "11.3.284",
+      "hash": "c855065d0ec41aa1efe60073003f7ca48f480dbe580ce02ed8d6b22ce4f069aa"
+    },
+    {
+      "version": "10.7.919",
+      "hash": "f09b2451dde64ef7e7a352da05cefcf231650b8b27a145950c0434dbe230dac9"
+    },
+    {
+      "version": "14.1.553",
+      "hash": "7db7d26a56fad969521c14cfd1453c89332b69cea299cd6a1066616bf2d8ad32"
+    },
+    {
+      "version": "13.5.187",
+      "hash": "fa73c03de4685f0cf97d3785517e7d47749764d0528cde68590d9202a190a29b"
+    },
+    {
+      "version": "15.10.54",
+      "hash": "da21e2405c7701374af464a6f96563736a42ec59930c9811213dd362e0e11adf"
+    },
+    {
+      "version": "14.3.688",
+      "hash": "e11820172616b458b70c497e95f8a3fd96a63c93a84fc4da4bbab665e5d83690"
+    },
+    {
+      "version": "12.7.323",
+      "hash": "7ea3178d19881fec34cc2c5c4a3b1ce0bc83442fb88235454afcfb91676178ce"
+    },
+    {
+      "version": "11.1.957",
+      "hash": "612c28ec586c59ad127acd974662f1ef9876806a19b1d979ebbf2fb8d677b512"
+    },
+    {
+      "version": "15.5.592",
+      "hash": "5c036da7a69f5c852ba110bbbdc144114b88bb362f8571989b6738730ed8579f"
+    },
+    {
+      "version": "14.0.226",
+      "hash": "c34ca6482368b5daffd22d594510a77195247e23d48a4257727344c226a4a33d"
+    },
+    {
+      "version": "12.4.861",
+      "hash": "0908ae43e88020373a378399f6ea77b6c204d861497295de632fa8b8ab4a7380"
+    },
+    {
+      "version": "10.9.495",
+      "hash": "ea39f0e5ed5cb00a94c7067bfac7c8abf0b8590668373a87b1b3463b0a80ad7c"
+    },
+    {
+      "version": "15.2.129",
+      "hash": "8ee5e0871352554f93d2f32a39c62112f28ac30418bdd331868f0f00bc1deff6"
+    },
+    {
+      "version": "11.7.996",
+      "hash": "60bfb0537badacae502336536586e6755b51ded6afe4cd160c746e38f32f7f06"
+    },
+    {
+      "version": "10.0.630",
+      "hash": "04e940ab1e34875f3b45f1217aab48cf5ca9593c86769ffb54c399c9f84c0845"
+    },
+    {
+      "version": "14.5.265",
+      "hash": "760cd33d71f4f82bf0fd348c5450419bff2ffffa3665ae728361a5337562d5a1"
+    }
+  ],
+  "ios": [
+    {
+      "version": "15.7.738",
+      "hash": "d762064fc37ee2a2600e4aaeaaff419a3f0849998cca2788d6c7c2e08041d1f8"
+    },
+    {
+      "version": "13.1.604",
+      "hash": "437ccaf571e11eadff9308b9f5dcd25786059229887e787182402485cb5f4308"
+    },
+    {
+      "version": "10.5.239",
+      "hash": "a5fc4bf2f940f89a9f9f25d37f110406fa784b8cfb5fb9d9594d24c501796ec7"
+    },
+    {
+      "version": "14.10.873",
+      "hash": "d76f4c9673c73668d3677d2716ba7a3b59410ee47cb83c747c93d65968f13a00"
+    },
+    {
+      "version": "13.3.507",
+      "hash": "ffda7a65282fc178575d134a2dbeabe3a5ee96ee906293deefec8baec9e04a25"
+    },
+    {
+      "version": "11.8.142",
+      "hash": "9a5f99036bf50aa31f7ee564dccb2e4f1770fa91a0b3f1d37ff5914e2e47e45d"
+    },
+    {
+      "version": "10.2.776",
+      "hash": "7e609e70159190bef71066fe8b36244fca6a6d2409335698d460c993bc40566e"
+    },
+    {
+      "version": "14.6.411",
+      "hash": "9503d545fa16b04dd799d6f1e81dd6aff18d77759a17e849581af8039ff8b9b8"
+    },
+    {
+      "version": "13.0.45",
+      "hash": "97e8759bee47f6eca166ae6ead4ba45f63b8687fb68ed8e9577e0e72c8ce1d87"
+    },
+    {
+      "version": "11.4.680",
+      "hash": "47929fe4632f1aff735d07bc6966d93a176268435d064cf811a8631066ef3301"
+    },
+    {
+      "version": "10.9.546",
+      "hash": "ac8ff85c7a564acc2e8bf296bc310a6e50e493ef3046eb9fd2156e6ab62f5b45"
+    },
+    {
+      "version": "12.2.181",
+      "hash": "42d5d0e5b296d59e829483d0631d09609c4fa9aef117f1e792a45b83d74a25bf"
+    },
+    {
+      "version": "10.7.815",
+      "hash": "78dd054ea237e99865792a196974e367aa2fe194c8d46d9c4b4f20e605e5b198"
+    },
+    {
+      "version": "15.0.449",
+      "hash": "c0711859b287630baccf4a0e230f84470d6eb4c5826364a07dd265f9834aca01"
+    },
+    {
+      "version": "13.5.84",
+      "hash": "2f319681416331d1fee94cd66933c52ae13ad32709a1531a4323efe84ba1c43a"
+    },
+    {
+      "version": "12.10.718",
+      "hash": "8c32edf8e18a88656e1e37074ef613e1307891395556ac2946c9834978f2813d"
+    },
+    {
+      "version": "10.4.353",
+      "hash": "d80ebe98f0028bff1e646e957c9a1d6485efb4eac149cdb155dbb6d5ad9196f1"
+    },
+    {
+      "version": "15.8.987",
+      "hash": "893b09a797656242d296dc40fc965c72e4d1e615a5b8a58dce48d921ebcf1e0f"
+    },
+    {
+      "version": "13.1.622",
+      "hash": "2c2928d9ca9217523879739741bf003fa21f85b7ba4f49bbd1a4dc311bdee650"
+    },
+    {
+      "version": "12.6.488",
+      "hash": "2cc2f77e40f7865f3eeb166da415cba3b3f5812b5900658979528d8cf29b3cc0"
+    },
+    {
+      "version": "14.10.123",
+      "hash": "220eef704b0912f1646bd6c4f81b631c61b900901861d29a0bfd8cea6bb6f58a"
+    },
+    {
+      "version": "12.4.757",
+      "hash": "ee3b756226cdc24135ed637972de71350988c06bbb75c3cd74a80210e62d5b2e"
+    },
+    {
+      "version": "11.8.392",
+      "hash": "3734c293887a2b830d55beb294701cebfd3a6f4ba4a3b316dbcbdab76125e686"
+    },
+    {
+      "version": "15.2.26",
+      "hash": "081462cacb91eefc9dd59041bc5a2959e0e442f612499bb8f00a3f2ea9b37585"
+    },
+    {
+      "version": "14.7.660",
+      "hash": "c8b0faabc61f5c927166b06ffd29c2a646d5a94b5472b0d580de17fd566a1203"
+    },
+    {
+      "version": "12.1.295",
+      "hash": "68749253f28129333bc94ebb2a5bbce5087ef9208501974c11efbe061f44c854"
+    },
+    {
+      "version": "11.5.929",
+      "hash": "ec1399b3dff2fb96d83bd986c14bc2e4ce96990d61516b780649060c091c8629"
+    },
+    {
+      "version": "15.9.564",
+      "hash": "562f413615003553d5566e3fd1cbf4eb5d30ebcb00a724b935e31241947d1250"
+    },
+    {
+      "version": "14.3.430",
+      "hash": "701908105f4f3ac56f46c63eac9dd2da957f1e26179087078883b4b05de195b6"
+    },
+    {
+      "version": "10.7.65",
+      "hash": "43870c927557b1509036b85f7124fb9210ea86f11bbe995dc487d73658f6ae16"
+    },
+    {
+      "version": "15.1.699",
+      "hash": "7215eb466cfa6616bf608e34b3fc78a166b8fc6d731395a2432980579202279e"
+    },
+    {
+      "version": "13.5.334",
+      "hash": "b35a0aa087ad19d7d907e107f767611d0f39dfa04d0118a13eba3d6d01e3f96d"
+    }
+  ]
+}
