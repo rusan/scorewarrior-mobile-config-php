@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services;
 
-use App\Config\DependencyNames;
+use App\Config\CacheTypes;
 use App\Services\FileCacheService;
 use App\Services\UrlsService;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -34,7 +34,7 @@ class UrlsServiceTest extends TestCase
 
         $this->fileCacheService->expects($this->once())
             ->method('loadJsonFile')
-            ->with(DependencyNames::URLS, '/test/path/urls-config.json')
+            ->with(CacheTypes::URLS, '/test/path/urls-config.json')
             ->willReturn($urlsData);
 
         $result = $this->service->getBackendJsonRpcUrl();
@@ -51,7 +51,7 @@ class UrlsServiceTest extends TestCase
 
         $this->fileCacheService->expects($this->once())
             ->method('loadJsonFile')
-            ->with(DependencyNames::URLS, '/test/path/urls-config.json')
+            ->with(CacheTypes::URLS, '/test/path/urls-config.json')
             ->willReturn($urlsData);
 
         $result = $this->service->getNotificationsJsonRpcUrl();
@@ -68,7 +68,7 @@ class UrlsServiceTest extends TestCase
 
         $this->fileCacheService->expects($this->once())
             ->method('loadJsonFile')
-            ->with(DependencyNames::URLS, '/test/path/urls-config.json')
+            ->with(CacheTypes::URLS, '/test/path/urls-config.json')
             ->willReturn($urlsData);
 
         $result = $this->service->getAssetsUrls();
@@ -85,7 +85,7 @@ class UrlsServiceTest extends TestCase
 
         $this->fileCacheService->expects($this->once())
             ->method('loadJsonFile')
-            ->with(DependencyNames::URLS, '/test/path/urls-config.json')
+            ->with(CacheTypes::URLS, '/test/path/urls-config.json')
             ->willReturn($urlsData);
 
         $result = $this->service->getDefinitionsUrls();
@@ -165,7 +165,7 @@ class UrlsServiceTest extends TestCase
 
         $this->fileCacheService->expects($this->exactly(4))
             ->method('loadJsonFile')
-            ->with(DependencyNames::URLS, '/test/path/urls-config.json')
+            ->with(CacheTypes::URLS, '/test/path/urls-config.json')
             ->willReturn($urlsData);
 
 

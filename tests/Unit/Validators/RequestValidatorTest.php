@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Validators;
 
-use App\Config\DependencyNames;
 use App\Config\RequestParameterNames;
 use App\Exceptions\ValidationException;
 use App\Validators\RequestValidator;
@@ -23,8 +22,8 @@ class RequestValidatorTest extends TestCase
         $params = [
             RequestParameterNames::PLATFORM => 'android',
             RequestParameterNames::APP_VERSION => '1.0.0',
-            DependencyNames::ASSETS => '1.0.0',
-            DependencyNames::DEFINITIONS => '1.0.0',
+            RequestParameterNames::ASSETS_VERSION => '1.0.0',
+            RequestParameterNames::DEFINITIONS_VERSION => '1.0.0',
         ];
 
         
@@ -37,8 +36,8 @@ class RequestValidatorTest extends TestCase
         $params = [
             RequestParameterNames::PLATFORM => 'ios',
             RequestParameterNames::APP_VERSION => '2.5.10',
-            DependencyNames::ASSETS => null,
-            DependencyNames::DEFINITIONS => null,
+            RequestParameterNames::ASSETS_VERSION => null,
+            RequestParameterNames::DEFINITIONS_VERSION => null,
         ];
 
         
@@ -107,7 +106,7 @@ class RequestValidatorTest extends TestCase
         $params = [
             RequestParameterNames::PLATFORM => 'android',
             RequestParameterNames::APP_VERSION => '1.0.0',
-            DependencyNames::ASSETS => '1.0',
+            RequestParameterNames::ASSETS_VERSION => '1.0',
         ];
 
         $this->expectException(ValidationException::class);
@@ -122,7 +121,7 @@ class RequestValidatorTest extends TestCase
         $params = [
             RequestParameterNames::PLATFORM => 'android',
             RequestParameterNames::APP_VERSION => '1.0.0',
-            DependencyNames::DEFINITIONS => 'invalid',
+            RequestParameterNames::DEFINITIONS_VERSION => 'invalid',
         ];
 
         $this->expectException(ValidationException::class);

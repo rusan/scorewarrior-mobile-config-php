@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services;
 
-use App\Config\DependencyNames;
 use App\Config\RequestParameterNames;
 use App\Services\RequestParameterService;
 use Phalcon\Http\Request;
@@ -31,8 +30,8 @@ class RequestParameterServiceTest extends TestCase
                 return match($param) {
                     RequestParameterNames::PLATFORM => 'android',
                     RequestParameterNames::APP_VERSION => '14.1.553',
-                    DependencyNames::ASSETS => '14.10.976',
-                    DependencyNames::DEFINITIONS => '14.1.996',
+                    RequestParameterNames::ASSETS_VERSION => '14.10.976',
+                    RequestParameterNames::DEFINITIONS_VERSION => '14.1.996',
                     default => $default
                 };
             });
@@ -42,8 +41,8 @@ class RequestParameterServiceTest extends TestCase
         $this->assertEquals([
             RequestParameterNames::PLATFORM => 'android',
             RequestParameterNames::APP_VERSION => '14.1.553',
-            DependencyNames::ASSETS => '14.10.976',
-            DependencyNames::DEFINITIONS => '14.1.996',
+            RequestParameterNames::ASSETS_VERSION => '14.10.976',
+            RequestParameterNames::DEFINITIONS_VERSION => '14.1.996',
         ], $result);
     }
 
@@ -55,8 +54,8 @@ class RequestParameterServiceTest extends TestCase
                 return match($param) {
                     RequestParameterNames::PLATFORM => 'ios',
                     RequestParameterNames::APP_VERSION => '14.2.100',
-                    DependencyNames::ASSETS => null,
-                    DependencyNames::DEFINITIONS => null,
+                    RequestParameterNames::ASSETS_VERSION => null,
+                    RequestParameterNames::DEFINITIONS_VERSION => null,
                     default => $default
                 };
             });
@@ -66,8 +65,8 @@ class RequestParameterServiceTest extends TestCase
         $this->assertEquals([
             RequestParameterNames::PLATFORM => 'ios',
             RequestParameterNames::APP_VERSION => '14.2.100',
-            DependencyNames::ASSETS => null,
-            DependencyNames::DEFINITIONS => null,
+            RequestParameterNames::ASSETS_VERSION => null,
+            RequestParameterNames::DEFINITIONS_VERSION => null,
         ], $result);
     }
 
@@ -79,8 +78,8 @@ class RequestParameterServiceTest extends TestCase
                 return match($param) {
                     RequestParameterNames::PLATFORM => '',
                     RequestParameterNames::APP_VERSION => '',
-                    DependencyNames::ASSETS => null,
-                    DependencyNames::DEFINITIONS => null,
+                    RequestParameterNames::ASSETS_VERSION => null,
+                    RequestParameterNames::DEFINITIONS_VERSION => null,
                     default => $default
                 };
             });
@@ -90,8 +89,8 @@ class RequestParameterServiceTest extends TestCase
         $this->assertEquals([
             RequestParameterNames::PLATFORM => '',
             RequestParameterNames::APP_VERSION => '',
-            DependencyNames::ASSETS => null,
-            DependencyNames::DEFINITIONS => null,
+            RequestParameterNames::ASSETS_VERSION => null,
+            RequestParameterNames::DEFINITIONS_VERSION => null,
         ], $result);
     }
 }
