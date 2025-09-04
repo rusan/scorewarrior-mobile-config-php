@@ -52,7 +52,8 @@ class ApplicationBootstrap
     {
         $requestValidator = $di->getShared('requestValidator');
         $parameterService = $di->getShared('requestParameterService');
-        MiddlewareManager::createDefault($requestValidator, $parameterService)->register($app);
+        $logger = $di->getShared('logger');
+        MiddlewareManager::createDefault($requestValidator, $parameterService, $logger)->register($app);
     }
     
     private static function registerRoutes(Micro $app): void

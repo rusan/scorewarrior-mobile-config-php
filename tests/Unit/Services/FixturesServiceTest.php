@@ -48,10 +48,13 @@ class FixturesServiceTest extends TestCase
             });
         $this->mtimeCache = new MtimeCacheService($this->config, $this->cacheManager);
         $ttlConfig = new \App\Services\TTLConfigService();
-        $this->fileCacheService = new \App\Services\FileCacheService($ttlConfig, $this->cacheManager, $this->mtimeCache);
+        $logger = $this->createMock(\App\Contracts\LoggerInterface::class);
+        $this->fileCacheService = new \App\Services\FileCacheService($ttlConfig, $this->cacheManager, $this->mtimeCache, $logger);
+        $fixturesLogger = $this->createMock(\App\Contracts\LoggerInterface::class);
         $this->fixturesService = new FixturesService(
             ['test' => $this->tempFilePath],
-            $this->fileCacheService
+            $this->fileCacheService,
+            $fixturesLogger
         );
     }
     

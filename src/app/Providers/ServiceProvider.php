@@ -106,7 +106,8 @@ class ServiceProvider
             $ttlConfig = $di->getShared('ttlConfigService');
             $cacheManager = $di->getShared('cacheManager');
             $mtimeCache = $di->getShared('mtimeCacheService');
-            return new FileCacheService($ttlConfig, $cacheManager, $mtimeCache);
+            $logger = $di->getShared('logger');
+            return new FileCacheService($ttlConfig, $cacheManager, $mtimeCache, $logger);
         });
     }
 
@@ -121,7 +122,8 @@ class ServiceProvider
             /** @var ConfigInterface $config */
             $config = $di->getShared('config');
             $fileCacheService = $di->getShared('fileCacheService');
-            return new FixturesService($config->getFixturesPaths(), $fileCacheService);
+            $logger = $di->getShared('logger');
+            return new FixturesService($config->getFixturesPaths(), $fileCacheService, $logger);
         });
 
         $di->setShared('resolverService', function () use ($di) {
@@ -130,12 +132,14 @@ class ServiceProvider
             $cacheManager = $di->getShared('cacheManager');
             $dependencyTypeRegistry = $di->getShared('dependencyTypeRegistry');
             $mtimeCacheService = $di->getShared('mtimeCacheService');
+            $logger = $di->getShared('logger');
             return new ResolverService(
                 $fixturesService,
                 $config,
                 $cacheManager,
                 $dependencyTypeRegistry,
-                $mtimeCacheService
+                $mtimeCacheService,
+                $logger
             );
         });
 
@@ -143,11 +147,16 @@ class ServiceProvider
             $resolverService = $di->getShared('resolverService');
             $config = $di->getShared('config');
             $cacheManager = $di->getShared('cacheManager');
-            return new ConfigService($resolverService, $config, $cacheManager);
+            $logger = $di->getShared('logger');
+            return new ConfigService($resolverService, $config, $cacheManager, $logger);
         });
 
         $di->setShared('requestParameterService', function () {
             return new RequestParameterService();
+        });
+
+        $di->setShared('logger', function () {
+            return new \App\Services\StructuredLogger();
         });
 
         $di->setShared('healthService', function () use ($di) {

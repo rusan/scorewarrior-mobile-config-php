@@ -35,12 +35,14 @@ class ResolverServiceTest extends TestCase
         $this->mtimeCacheService = $this->createMock(MtimeCacheService::class);
         
         
+        $logger = $this->createMock(\App\Contracts\LoggerInterface::class);
         $this->resolverService = new ResolverService(
             $this->fixturesService,
             $this->config,
             $this->cacheManager,
             $this->dependencyTypeRegistry,
-            $this->mtimeCacheService
+            $this->mtimeCacheService,
+            $logger
         );
     }
     

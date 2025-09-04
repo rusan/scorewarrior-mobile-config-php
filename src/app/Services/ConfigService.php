@@ -6,14 +6,15 @@ namespace App\Services;
 use App\Config\ConfigInterface;
 use App\Config\DependencyNames;
 use App\Utils\CacheKeyBuilder;
-use App\Utils\Log;
+use App\Contracts\LoggerInterface;
 
 class ConfigService
 {
     public function __construct(
         private ResolverService $resolverService,
         private ConfigInterface $config,
-        private CacheManager $cacheManager
+        private CacheManager $cacheManager,
+        private LoggerInterface $logger
     ) {}
 
     public function getConfig(string $appVersion, string $platform, ?string $assetsVersion, ?string $definitionsVersion): ?array
@@ -35,11 +36,7 @@ class ConfigService
                 $dependency = $this->resolverService->resolveDependency($typeName, $appVersion, $platform, $explicitVersion);
                 
                 if ($dependency === null) {
-                    Log::info('dependency_resolution_failed', [
-                        'type' => $typeName,
-                        'appVersion' => $appVersion,
-                        'platform' => $platform
-                    ]);
+                    $this->logger->logConfigNotFound($appVersion, $platform, "dependency_resolution_failed: {$typeName}");
                     return null;
                 }
                 

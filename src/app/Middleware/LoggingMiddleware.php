@@ -5,10 +5,15 @@ namespace App\Middleware;
 
 use App\Utils\Clock;
 use App\Utils\Log;
+use App\Contracts\LoggerInterface;
 use Phalcon\Mvc\Micro;
 
 class LoggingMiddleware extends AbstractMiddleware
 {
+    public function __construct(
+        private LoggerInterface $logger
+    ) {}
+
     public function handle(Micro $app): bool
     {
         $t0 = Clock::now();
@@ -18,20 +23,28 @@ class LoggingMiddleware extends AbstractMiddleware
         $rid = $request->getHeader('X-Request-Id') ?: uniqid('req_', true);
         Log::setRequestId($rid);
 
-        Log::info('request_received', [
-            'method'   => $request->getMethod(),
-            'path'     => $request->getURI(),
-            'query'    => $_GET,
-            'clientIp' => $request->getClientAddress(),
-        ]);
+        $this->logger->logRequestReceived(
+            $request->getMethod(),
+            $request->getURI(),
+            array_merge($_GET, ['clientIp' => $request->getClientAddress()])
+        );
         
-        $app->after(function () use ($app, $t0) {
+        $logger = $this->logger;
+        $app->after(function () use ($app, $t0, $logger) {
             $response = $app->response;
+            $statusCode = 200; // Default
             
-            Log::info('response_sent', [
-                'status'   => $response->getStatusCode(),
-                'duration_ms' => round(Clock::sinceMs($t0), 3),
-            ]);
+            if ($response && method_exists($response, 'getStatusCode')) {
+                $code = $response->getStatusCode();
+                if (is_int($code) && $code > 0) {
+                    $statusCode = $code;
+                }
+            }
+            
+            $logger->logResponseSent(
+                $statusCode,
+                Clock::sinceMs($t0) / 1000 // Convert to seconds for consistency
+            );
         });
         
         return true;

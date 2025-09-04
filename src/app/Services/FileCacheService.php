@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Config\DependencyNames;
+use App\Contracts\LoggerInterface;
 use App\Utils\CacheKeyBuilder;
-use App\Utils\Log;
 
 class FileCacheService
 {
@@ -13,7 +13,8 @@ class FileCacheService
     public function __construct(
         private TTLConfigService $ttlConfig,
         private CacheManager $cacheManager,
-        private MtimeCacheService $mtimeCacheService
+        private MtimeCacheService $mtimeCacheService,
+        private LoggerInterface $logger
     ) {}
 
     public function loadJsonFile(string $cacheType, string $filePath): array
@@ -27,26 +28,26 @@ class FileCacheService
         }
 
         if (!is_file($filePath)) {
-            Log::error('file_not_found', ['path' => $filePath]);
+            $this->logger->logFileNotFound($filePath);
             return [];
         }
 
         $content = file_get_contents($filePath);
         if ($content === false) {
-            Log::error('file_read_failed', ['path' => $filePath]);
+            $this->logger->logFileInvalid($filePath, 'read_failed');
             return [];
         }
 
         $decoded = json_decode($content, true);
         if (!is_array($decoded)) {
-            Log::error('file_invalid_json', ['path' => $filePath]);
+            $this->logger->logFileInvalid($filePath, 'invalid_json');
             return [];
         }
 
         $ttl = $this->ttlConfig->getTTLForCacheType($cacheType);
         $this->cacheManager->set($cacheKey, $decoded, $cacheType, $ttl);
 
-        Log::info('file_loaded', ['path' => $filePath, 'mtime' => $mtime]);
+        $this->logger->logFileLoaded($filePath, $mtime, strlen($content));
         return $decoded;
     }
 

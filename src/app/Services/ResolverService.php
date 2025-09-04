@@ -6,8 +6,8 @@ namespace App\Services;
 use App\Config\ConfigInterface;
 use App\Config\DependencyNames;
 use App\Services\DependencyTypeRegistry;
+use App\Contracts\LoggerInterface;
 use App\Utils\CacheKeyBuilder;
-use App\Utils\Log;
 use App\Utils\Semver;
 
 class ResolverService
@@ -19,6 +19,7 @@ class ResolverService
         private CacheManager $cacheManager,
         private DependencyTypeRegistry $dependencyTypeRegistry,
         private MtimeCacheService $mtimeCacheService,
+        private LoggerInterface $logger,
     ) {}
 
     private function getMtimeForType(string $type, string $platform): int
@@ -32,7 +33,7 @@ class ResolverService
         $type = $this->dependencyTypeRegistry->get($dependencyType);
         
         if ($type === null) {
-            Log::warn('unknown_dependency_type', compact('dependencyType'));
+            $this->logger->warn('unknown_dependency_type', compact('dependencyType'));
             return null;
         }
         
@@ -51,7 +52,7 @@ class ResolverService
 
         if ($explicitVersion !== null) {
             if (!isset($map[$explicitVersion]) || !$type->isCompatible($appVersion, $explicitVersion)) {
-                Log::info("{$dependencyType}_explicit_not_found_or_incompatible", compact('platform', 'appVersion', 'explicitVersion'));
+                $this->logger->logConfigNotFound($appVersion, $platform, "explicit_{$dependencyType}_not_found_or_incompatible");
                 return null;
             }
             return ['version' => $explicitVersion, 'hash' => $map[$explicitVersion]];
@@ -69,8 +70,8 @@ class ResolverService
         }
         $res = ['version' => $best, 'hash' => $map[$best]];
 
-        Log::info('resolver_cache_set', ['kind' => $dependencyType, 'key' => $cacheKey, 'version' => $best]);
         $ttlSettings = $this->config->getMtimeCacheTTLSettings();
+        $this->logger->logCacheSet($cacheKey, 'resolver', $ttlSettings['general']);
         $this->cacheManager->set($cacheKey, $res, 'resolver', $ttlSettings['general']);
 
         return $res;

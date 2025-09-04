@@ -26,10 +26,12 @@ class ConfigServiceTest extends TestCase
         $this->resolverService = $this->createMock(ResolverService::class);
         $this->config = $this->createMock(ConfigInterface::class);
         $this->cacheManager = $this->createMock(CacheManager::class);
+        $logger = $this->createMock(\App\Contracts\LoggerInterface::class);
         $this->configService = new ConfigService(
             $this->resolverService,
             $this->config,
-            $this->cacheManager
+            $this->cacheManager,
+            $logger
         );
     }
     

@@ -37,10 +37,12 @@ class FileCacheServiceTest extends TestCase
         $this->cacheManager = $this->createMock(CacheManager::class);
         $this->mtimeCacheService = $this->createMock(MtimeCacheService::class);
         $this->mtimeCacheService->method('getMtime')->willReturn(1234567890);
+        $logger = $this->createMock(\App\Contracts\LoggerInterface::class);
         $this->fileCacheService = new FileCacheService(
             $this->ttlConfig,
             $this->cacheManager,
-            $this->mtimeCacheService
+            $this->mtimeCacheService,
+            $logger
         );
     }
 
