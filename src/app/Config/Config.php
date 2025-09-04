@@ -14,9 +14,9 @@ use Closure;
  */
 class Config implements ConfigInterface
 {
-    private const PRODUCTION_ENVIRONMENTS = ['prod', 'production'];
-    private const DEVELOPMENT_ENVIRONMENTS = ['dev', 'development'];
-    private const TESTING_ENVIRONMENT = 'testing';
+    private const PRODUCTION_ENVIRONMENTS = ['prod' => true, 'production' => true];
+    private const DEVELOPMENT_ENVIRONMENTS = ['dev' => true, 'development' => true];
+    private const TESTING_ENVIRONMENTS = ['testing' => true];
     
     private array $mtimeCachePathMap;
     private array $fixturesPaths;
@@ -90,17 +90,17 @@ class Config implements ConfigInterface
 
     public function isProduction(): bool
     {
-        return in_array(strtolower($this->appEnv), self::PRODUCTION_ENVIRONMENTS, true);
+        return isset(self::PRODUCTION_ENVIRONMENTS[strtolower($this->appEnv)]);
     }
 
     public function isDevelopment(): bool
     {
-        return in_array(strtolower($this->appEnv), self::DEVELOPMENT_ENVIRONMENTS, true);
+        return isset(self::DEVELOPMENT_ENVIRONMENTS[strtolower($this->appEnv)]);
     }
 
     public function isTesting(): bool
     {
-        return strtolower($this->appEnv) === self::TESTING_ENVIRONMENT;
+        return isset(self::TESTING_ENVIRONMENTS[strtolower($this->appEnv)]);
     }
 
     // Paths
