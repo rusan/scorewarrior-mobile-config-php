@@ -52,6 +52,7 @@ class ResolverService
             return $cachedResult;
         }
 
+        // Load raw fixtures and simple map for compatibility with tests and generic dependency types
         $rows = $this->fixturesService->load($dependencyType, $platform);
         $map = $this->fixturesService->toMap($rows);
         $versions = array_keys($map);
@@ -64,7 +65,13 @@ class ResolverService
             return ['version' => $explicitVersion, 'hash' => $map[$explicitVersion]];
         }
 
-        $best = $this->pickBestCompatible($appVersion, $versions, $type);
+        // Use indexed fast path only for known concrete types; fallback to generic selection for others
+        if ($type instanceof \App\Services\DependencyTypes\AssetsType || $type instanceof \App\Services\DependencyTypes\DefinitionsType) {
+            $index = \App\Utils\VersionIndex::build($rows);
+            $best = $this->pickBestCompatibleIndexed($appVersion, $index, $type);
+        } else {
+            $best = $this->pickBestCompatible($appVersion, $versions, $type);
+        }
         if (!$best) {
             return null;
         }
@@ -78,6 +85,34 @@ class ResolverService
         return $res;
     }
     
+    private function pickBestCompatibleIndexed(string $appVersion, array $index, DependencyTypeInterface $type): ?string
+    {
+        $p = Semver::parse($appVersion);
+        $maj = $p['major'];
+        $min = $p['minor'];
+
+        if ($type instanceof \App\Services\DependencyTypes\AssetsType) {
+            $arr = $index['byMajor'][$maj] ?? [];
+        } elseif ($type instanceof \App\Services\DependencyTypes\DefinitionsType) {
+            $key = $maj . '.' . $min;
+            $arr = $index['byMajorMinor'][$key] ?? [];
+        } else {
+            // Fallback: filter generically by isCompatible
+            $versions = array_keys($index['versionToHash']);
+            $arr = [];
+            foreach ($versions as $v) {
+                if ($type->isCompatible($appVersion, $v)) {
+                    $arr[] = $v;
+                }
+            }
+            usort($arr, fn(string $a, string $b) => Semver::compare($a, $b));
+        }
+
+        if (!$arr) return null;
+        // Pick the highest compatible version (arrays sorted ascending)
+        return $arr[count($arr) - 1] ?? null;
+    }
+
     private function pickBestCompatible(string $appVersion, array $versions, DependencyTypeInterface $type): ?string
     {
         $compatible = [];
@@ -86,11 +121,9 @@ class ResolverService
                 $compatible[] = $version;
             }
         }
-        
         if (empty($compatible)) {
             return null;
         }
-        
         return Semver::pickBest($compatible);
     }
 }
