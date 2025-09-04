@@ -225,7 +225,7 @@ curl -i "http://127.0.0.1:8080/config?appVersion=14.2.123&platform=desktop"
 
 ### Покрытие
 
-* **47 тестов, 128 assertions**
+* **79 тестов, 218 assertions**
 * Все тесты проходят в Docker окружении
 * Используется PHPUnit 10.x с современными практиками
 
@@ -241,6 +241,9 @@ docker compose exec app ./vendor/bin/phpunit --testdox
 # С покрытием кода
 docker compose exec app ./vendor/bin/phpunit --coverage-html coverage/
 ```
+
+> Примечание: e2e smoke-тесты обращаются к `http://127.0.0.1:8080`. Если вы запускаете PHPUnit вне Docker или на другом порту, задайте переменную окружения `BASE_URL`,
+> например: `BASE_URL=http://127.0.0.1:18080 ./vendor/bin/phpunit`.
 
 ## Docker
 
