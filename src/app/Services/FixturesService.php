@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Config\ConfigInterface;
-use App\Config\DependencyNames;
+use App\Config\CacheTypes;
 use App\Contracts\LoggerInterface;
 
 class FixturesService
@@ -23,7 +23,7 @@ class FixturesService
             return [];
         }
 
-        $json = $this->fileCacheService->loadJsonFile(DependencyNames::FIXTURES, $path);
+        $json = $this->fileCacheService->loadJsonFile(CacheTypes::FIXTURES, $path);
         if (!is_array($json) || !isset($json[$platform]) || !is_array($json[$platform])) {
             $this->logger->error('fixtures_platform_data_invalid', compact('kind','platform','path'));
             return [];

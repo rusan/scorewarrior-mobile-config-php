@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Config;
 
+use App\Config\CacheTypes;
 use App\Services\DependencyTypeRegistry;
 use App\Services\UrlsService;
 use Closure;
@@ -13,6 +14,10 @@ use Closure;
  */
 class Config implements ConfigInterface
 {
+    private const PRODUCTION_ENVIRONMENTS = ['prod', 'production'];
+    private const DEVELOPMENT_ENVIRONMENTS = ['dev', 'development'];
+    private const TESTING_ENVIRONMENT = 'testing';
+    
     private array $mtimeCachePathMap;
     private array $fixturesPaths;
 
@@ -56,11 +61,11 @@ class Config implements ConfigInterface
         $this->mtimeCachePathMap = [];
         $this->fixturesPaths = [];
         
-        $this->mtimeCachePathMap[$this->getUrlsConfigPath()] = $ttlSettings[DependencyNames::URLS];
+        $this->mtimeCachePathMap[$this->getUrlsConfigPath()] = $ttlSettings[CacheTypes::URLS];
         
         foreach ($this->dependencyTypeRegistry->getAll() as $type) {
             $filePath = $this->dataPath . '/' . $type->getFileName();
-            $this->mtimeCachePathMap[$filePath] = $ttlSettings[DependencyNames::FIXTURES];
+            $this->mtimeCachePathMap[$filePath] = $ttlSettings[CacheTypes::FIXTURES];
             $this->fixturesPaths[$type->getName()] = $filePath;
         }
     }
@@ -85,17 +90,17 @@ class Config implements ConfigInterface
 
     public function isProduction(): bool
     {
-        return in_array(strtolower($this->appEnv), ['prod', 'production'], true);
+        return in_array(strtolower($this->appEnv), self::PRODUCTION_ENVIRONMENTS, true);
     }
 
     public function isDevelopment(): bool
     {
-        return in_array(strtolower($this->appEnv), ['dev', 'development'], true);
+        return in_array(strtolower($this->appEnv), self::DEVELOPMENT_ENVIRONMENTS, true);
     }
 
     public function isTesting(): bool
     {
-        return strtolower($this->appEnv) === 'testing';
+        return strtolower($this->appEnv) === self::TESTING_ENVIRONMENT;
     }
 
     // Paths

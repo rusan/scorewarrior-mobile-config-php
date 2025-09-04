@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Config\DependencyNames;
+use App\Config\CacheTypes;
 use App\Contracts\LoggerInterface;
 use App\Utils\CacheKeyBuilder;
 
@@ -54,9 +54,9 @@ class FileCacheService
     private function buildCacheKey(string $cacheType, string $filePath, int $mtime): string
     {
         switch ($cacheType) {
-            case DependencyNames::FIXTURES:
+            case CacheTypes::FIXTURES:
                 return CacheKeyBuilder::file($cacheType, $filePath, $mtime);
-            case DependencyNames::URLS:
+            case CacheTypes::URLS:
                 return CacheKeyBuilder::urls($mtime);
             default:
                 return CacheKeyBuilder::file($cacheType, $filePath, $mtime);

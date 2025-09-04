@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Config\DependencyNames;
+use App\Config\RequestParameterNames;
 use App\Config\HttpStatusCodes;
 use App\Services\ConfigService;
 use App\Services\FixturesService;
@@ -28,10 +28,10 @@ final class ConfigController
         $request = $app->request;
         $params = $this->parameterService->extractConfigParameters($request);
         
-        $platform = $params['platform'];
-        $appVer = $params['appVersion'];
-        $assetsVer = $params[DependencyNames::ASSETS];
-        $defsVer = $params[DependencyNames::DEFINITIONS];
+        $platform = $params[RequestParameterNames::PLATFORM];
+        $appVer = $params[RequestParameterNames::APP_VERSION];
+        $assetsVer = $params[RequestParameterNames::ASSETS_VERSION];
+        $defsVer = $params[RequestParameterNames::DEFINITIONS_VERSION];
 
         Log::info('config_request', compact('platform', 'appVer', 'assetsVer', 'defsVer'));
         Log::incCounter('requests_total');
@@ -48,8 +48,8 @@ final class ConfigController
             Log::info('config_resolved', [
                 'platform' => $platform,
                 'appVersion' => $appVer,
-                'assetsVersion' => $result[DependencyNames::ASSETS]['version'],
-                'definitionsVersion' => $result[DependencyNames::DEFINITIONS]['version'],
+                'assetsVersion' => $result[RequestParameterNames::ASSETS_VERSION]['version'],
+                'definitionsVersion' => $result[RequestParameterNames::DEFINITIONS_VERSION]['version'],
             ]);
             Log::incCounter('config_resolved_total');
             

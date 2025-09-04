@@ -5,7 +5,7 @@ namespace App\Services;
 
 use App\Config\ConfigInterface;
 use App\Config\DataFileNames;
-use App\Config\DependencyNames;
+use App\Config\CacheTypes;
 use App\Services\CacheManager;
 use App\Services\MtimeCacheService;
 use App\Utils\Log;
@@ -44,6 +44,6 @@ class UrlsService
     /** @return array<string, mixed> */
     private function getUrls(): array
     {
-        return $this->fileCacheService->loadJsonFile(DependencyNames::URLS, $this->configPath);
+        return $this->fileCacheService->loadJsonFile(CacheTypes::URLS, $this->configPath);
     }
 }

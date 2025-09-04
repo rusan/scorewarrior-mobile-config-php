@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Config\ConfigInterface;
-use App\Config\DependencyNames;
+use App\Config\RequestParameterNames;
 use App\Utils\CacheKeyBuilder;
 use App\Contracts\LoggerInterface;
 
@@ -28,8 +28,8 @@ class ConfigService
             ];
             
             $versions = [
-                DependencyNames::ASSETS => $assetsVersion,
-                DependencyNames::DEFINITIONS => $definitionsVersion,
+                RequestParameterNames::ASSETS_VERSION => $assetsVersion,
+                RequestParameterNames::DEFINITIONS_VERSION => $definitionsVersion,
             ];
             
             foreach ($versions as $typeName => $explicitVersion) {
@@ -54,8 +54,8 @@ class ConfigService
     private function getUrlsForType(string $type): array
     {
         return match($type) {
-            DependencyNames::ASSETS => $this->config->getAssetsUrls(),
-            DependencyNames::DEFINITIONS => $this->config->getDefinitionsUrls(),
+            RequestParameterNames::ASSETS_VERSION => $this->config->getAssetsUrls(),
+            RequestParameterNames::DEFINITIONS_VERSION => $this->config->getDefinitionsUrls(),
             default => []
         };
     }

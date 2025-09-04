@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Config\ConfigInterface;
-use App\Config\DependencyNames;
+use App\Config\CacheTypes;
 
 class TTLConfigService
 {
@@ -15,8 +15,8 @@ class TTLConfigService
     public function getTTLForCacheType(string $cacheType): int
     {
         return match($cacheType) {
-            DependencyNames::FIXTURES => $this->config->getMtimeCacheFixturesTtl(),
-            DependencyNames::URLS => $this->config->getMtimeCacheUrlsTtl(),
+            CacheTypes::FIXTURES => $this->config->getMtimeCacheFixturesTtl(),
+            CacheTypes::URLS => $this->config->getMtimeCacheUrlsTtl(),
             default => $this->config->getMtimeCacheGeneralTtl()
         };
     }

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services;
 
-use App\Config\DependencyNames;
+use App\Config\CacheTypes;
 use App\Services\TTLConfigService;
 use Tests\TestCase;
 
@@ -25,7 +25,7 @@ class TTLConfigServiceTest extends TestCase
 
     public function testGetTTLForCacheTypeFixtures(): void
     {
-        $result = $this->service->getTTLForCacheType(DependencyNames::FIXTURES);
+        $result = $this->service->getTTLForCacheType(CacheTypes::FIXTURES);
         
         $this->assertIsInt($result);
         $this->assertGreaterThan(0, $result);
@@ -34,7 +34,7 @@ class TTLConfigServiceTest extends TestCase
 
     public function testGetTTLForCacheTypeUrls(): void
     {
-        $result = $this->service->getTTLForCacheType(DependencyNames::URLS);
+        $result = $this->service->getTTLForCacheType(CacheTypes::URLS);
         
         $this->assertIsInt($result);
         $this->assertGreaterThan(0, $result);

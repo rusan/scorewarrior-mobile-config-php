@@ -3,9 +3,8 @@ declare(strict_types=1);
 
 namespace App\Validators;
 
-use App\Config\DependencyNames;
-use App\Config\HttpStatusCodes;
 use App\Config\RequestParameterNames;
+use App\Config\HttpStatusCodes;
 use App\Config\ValidationConstants;
 use App\Exceptions\ValidationException;
 
@@ -16,13 +15,13 @@ class RequestValidator
     {
         $platform = $params[RequestParameterNames::PLATFORM] ?? '';
         $appVersion = $params[RequestParameterNames::APP_VERSION] ?? '';
-        $assetsVersion = $params[DependencyNames::ASSETS] ?? null;
-        $definitionsVersion = $params[DependencyNames::DEFINITIONS] ?? null;
+        $assetsVersion = $params[RequestParameterNames::ASSETS_VERSION] ?? null;
+        $definitionsVersion = $params[RequestParameterNames::DEFINITIONS_VERSION] ?? null;
 
         $this->validatePlatform($platform);
         $this->validateAppVersion($appVersion);
-        $this->validateOptionalVersion($assetsVersion, DependencyNames::ASSETS);
-        $this->validateOptionalVersion($definitionsVersion, DependencyNames::DEFINITIONS);
+        $this->validateOptionalVersion($assetsVersion, RequestParameterNames::ASSETS_VERSION);
+        $this->validateOptionalVersion($definitionsVersion, RequestParameterNames::DEFINITIONS_VERSION);
     }
 
     private function validatePlatform(string $platform): void

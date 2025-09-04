@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Services\DependencyTypes;
 
 use App\Config\DataFileNames;
-use App\Config\DependencyNames;
+use App\Config\RequestParameterNames;
 use App\Services\DependencyTypeInterface;
 use App\Utils\Semver;
 
@@ -12,7 +12,7 @@ class DefinitionsType implements DependencyTypeInterface
 {
     public function getName(): string
     {
-        return DependencyNames::DEFINITIONS;
+        return RequestParameterNames::DEFINITIONS_VERSION;
     }
     
     public function getFileName(): string

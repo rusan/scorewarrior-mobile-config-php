@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services;
 
-use App\Config\DependencyNames;
+use App\Config\RequestParameterNames;
 use App\Services\DependencyTypeInterface;
 use App\Services\DependencyTypeRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -24,20 +24,20 @@ class DependencyTypeRegistryTest extends TestCase
     {
         $names = $this->registry->getNames();
         
-        $this->assertContains(DependencyNames::ASSETS, $names);
-        $this->assertContains(DependencyNames::DEFINITIONS, $names);
+        $this->assertContains(RequestParameterNames::ASSETS_VERSION, $names);
+        $this->assertContains(RequestParameterNames::DEFINITIONS_VERSION, $names);
         $this->assertCount(2, $names);
     }
 
     public function testGetExistingType(): void
     {
-        $assetsType = $this->registry->get(DependencyNames::ASSETS);
-        $definitionsType = $this->registry->get(DependencyNames::DEFINITIONS);
+        $assetsType = $this->registry->get(RequestParameterNames::ASSETS_VERSION);
+        $definitionsType = $this->registry->get(RequestParameterNames::DEFINITIONS_VERSION);
         
         $this->assertNotNull($assetsType);
         $this->assertNotNull($definitionsType);
-        $this->assertEquals(DependencyNames::ASSETS, $assetsType->getName());
-        $this->assertEquals(DependencyNames::DEFINITIONS, $definitionsType->getName());
+        $this->assertEquals(RequestParameterNames::ASSETS_VERSION, $assetsType->getName());
+        $this->assertEquals(RequestParameterNames::DEFINITIONS_VERSION, $definitionsType->getName());
     }
 
     public function testGetNonExistentType(): void
@@ -65,11 +65,11 @@ class DependencyTypeRegistryTest extends TestCase
     public function testRegisterOverwriteExistingType(): void
     {
         $mockType = $this->createMock(DependencyTypeInterface::class);
-        $mockType->method('getName')->willReturn(DependencyNames::ASSETS);
+        $mockType->method('getName')->willReturn(RequestParameterNames::ASSETS_VERSION);
         
-        $originalType = $this->registry->get(DependencyNames::ASSETS);
+        $originalType = $this->registry->get(RequestParameterNames::ASSETS_VERSION);
         $this->registry->register($mockType);
-        $newType = $this->registry->get(DependencyNames::ASSETS);
+        $newType = $this->registry->get(RequestParameterNames::ASSETS_VERSION);
         
         $this->assertNotSame($originalType, $newType);
         $this->assertSame($mockType, $newType);
@@ -84,8 +84,8 @@ class DependencyTypeRegistryTest extends TestCase
         
         $this->assertIsArray($allTypes);
         $this->assertCount(2, $allTypes);
-        $this->assertArrayHasKey(DependencyNames::ASSETS, $allTypes);
-        $this->assertArrayHasKey(DependencyNames::DEFINITIONS, $allTypes);
+        $this->assertArrayHasKey(RequestParameterNames::ASSETS_VERSION, $allTypes);
+        $this->assertArrayHasKey(RequestParameterNames::DEFINITIONS_VERSION, $allTypes);
         
         foreach ($allTypes as $type) {
             $this->assertInstanceOf(DependencyTypeInterface::class, $type);
@@ -97,6 +97,6 @@ class DependencyTypeRegistryTest extends TestCase
         $names = $this->registry->getNames();
         
         $this->assertIsArray($names);
-        $this->assertEquals([DependencyNames::ASSETS, DependencyNames::DEFINITIONS], $names);
+        $this->assertEquals([RequestParameterNames::ASSETS_VERSION, RequestParameterNames::DEFINITIONS_VERSION], $names);
     }
 }
