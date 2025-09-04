@@ -10,13 +10,11 @@ use Closure;
 
 class ConfigFactory
 {
-    public static function create(DependencyTypeRegistry $dependencyTypeRegistry, Closure $urlsServiceProvider): ConfigInterface
+    public static function create(DependencyTypeRegistry $dependencyTypeRegistry, Closure $urlsServiceProvider, AppConfig $appConfig): ConfigInterface
     {
-        $environment = getenv('APP_ENV') ?: 'dev';
-        
-        return match (strtolower($environment)) {
-            'prod', 'production' => new ProdConfig($dependencyTypeRegistry, $urlsServiceProvider),
-            default => new DevConfig($dependencyTypeRegistry, $urlsServiceProvider),
+        return match (true) {
+            $appConfig->isProduction() => new ProdConfig($dependencyTypeRegistry, $urlsServiceProvider, $appConfig),
+            default => new DevConfig($dependencyTypeRegistry, $urlsServiceProvider, $appConfig),
         };
     }
 }

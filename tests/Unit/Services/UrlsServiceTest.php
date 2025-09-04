@@ -19,7 +19,10 @@ class UrlsServiceTest extends TestCase
         parent::setUp();
         
         $this->fileCacheService = $this->createMock(FileCacheService::class);
-        $this->service = new UrlsService($this->fileCacheService, '/test/path/urls-config.json');
+        $appConfig = $this->createMock(\App\Config\AppConfig::class);
+        $appConfig->method('getUrlsConfigPath')->willReturn('/test/path/urls-config.json');
+        
+        $this->service = new UrlsService($this->fileCacheService, $appConfig);
     }
 
     public function testGetBackendJsonRpcUrl(): void

@@ -85,7 +85,9 @@ final class Log
         $json = json_encode($record, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         if ($json !== false) {
 
-            $stream = (getenv('APP_ENV') === 'testing') ? 'php://stderr' : 'php://stdout';
+            // Use stderr for testing environment, stdout for others
+            $appEnv = getenv('APP_ENV') ?: 'dev';
+            $stream = ($appEnv === 'testing') ? 'php://stderr' : 'php://stdout';
 
             file_put_contents($stream, $json . "\n");
         }

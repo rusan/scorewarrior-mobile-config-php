@@ -15,7 +15,12 @@ class TTLConfigServiceTest extends TestCase
     {
         parent::setUp();
         
-        $this->service = new TTLConfigService();
+        $appConfig = $this->createMock(\App\Config\AppConfig::class);
+        $appConfig->method('getMtimeCacheFixturesTtl')->willReturn(3600);
+        $appConfig->method('getMtimeCacheUrlsTtl')->willReturn(60);
+        $appConfig->method('getMtimeCacheGeneralTtl')->willReturn(5);
+        
+        $this->service = new TTLConfigService($appConfig);
     }
 
     public function testGetTTLForCacheTypeFixtures(): void
@@ -47,53 +52,26 @@ class TTLConfigServiceTest extends TestCase
 
     public function testGetFixturesTTLDefaultValue(): void
     {
-        
-        $originalValue = getenv('MTIME_CACHE_FIXTURES_TTL');
-        putenv('MTIME_CACHE_FIXTURES_TTL=');
-        
         $result = $this->service->getFixturesTTL();
         
         $this->assertIsInt($result);
-        $this->assertEquals(3600, $result); // Default value
-        
-        
-        if ($originalValue !== false) {
-            putenv("MTIME_CACHE_FIXTURES_TTL={$originalValue}");
-        }
+        $this->assertEquals(3600, $result); // Mocked value
     }
 
     public function testGetUrlsTTLDefaultValue(): void
     {
-        
-        $originalValue = getenv('MTIME_CACHE_URLS_TTL');
-        putenv('MTIME_CACHE_URLS_TTL=');
-        
         $result = $this->service->getUrlsTTL();
         
         $this->assertIsInt($result);
-        $this->assertEquals(7200, $result); // Default value
-        
-        
-        if ($originalValue !== false) {
-            putenv("MTIME_CACHE_URLS_TTL={$originalValue}");
-        }
+        $this->assertEquals(60, $result); // Mocked value
     }
 
     public function testGetGeneralTTLDefaultValue(): void
     {
-        
-        $originalValue = getenv('MTIME_CACHE_GENERAL_TTL');
-        putenv('MTIME_CACHE_GENERAL_TTL=');
-        
         $result = $this->service->getGeneralTTL();
         
         $this->assertIsInt($result);
-        $this->assertEquals(1800, $result); // Default value
-        
-        
-        if ($originalValue !== false) {
-            putenv("MTIME_CACHE_GENERAL_TTL={$originalValue}");
-        }
+        $this->assertEquals(5, $result); // Mocked value
     }
 
     public function testAllTTLsArePositive(): void

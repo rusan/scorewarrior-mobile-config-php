@@ -63,14 +63,16 @@ class ServiceProvider
     {
         $di->setShared('config', function () use ($di) {
             $dependencyTypeRegistry = $di->getShared('dependencyTypeRegistry');
+            $appConfig = $di->getShared('appConfig');
             $urlsServiceProvider = function () use ($di) {
                 return $di->getShared('urlsService');
             };
-            return ConfigFactory::create($dependencyTypeRegistry, $urlsServiceProvider);
+            return ConfigFactory::create($dependencyTypeRegistry, $urlsServiceProvider, $appConfig);
         });
 
-        $di->setShared('ttlConfigService', function () {
-            return new TTLConfigService();
+        $di->setShared('ttlConfigService', function () use ($di) {
+            $appConfig = $di->getShared('appConfig');
+            return new TTLConfigService($appConfig);
         });
     }
 
@@ -92,7 +94,8 @@ class ServiceProvider
 
         $di->setShared('cacheManager', function () use ($di): CacheManager {
             $cache = $di->getShared('cache');
-            return new CacheManager($cache);
+            $appConfig = $di->getShared('appConfig');
+            return new CacheManager($cache, $appConfig);
         });
 
         $di->setShared('mtimeCacheService', function () use ($di) {
@@ -115,7 +118,8 @@ class ServiceProvider
     {
         $di->setShared('urlsService', function () use ($di) {
             $fileCacheService = $di->getShared('fileCacheService');
-            return new UrlsService($fileCacheService);
+            $appConfig = $di->getShared('appConfig');
+            return new UrlsService($fileCacheService, $appConfig);
         });
 
         $di->setShared('fixturesService', function () use ($di) {
@@ -153,6 +157,10 @@ class ServiceProvider
 
         $di->setShared('requestParameterService', function () {
             return new RequestParameterService();
+        });
+
+        $di->setShared('appConfig', function () {
+            return \App\Config\AppConfig::fromEnv();
         });
 
         $di->setShared('logger', function () {

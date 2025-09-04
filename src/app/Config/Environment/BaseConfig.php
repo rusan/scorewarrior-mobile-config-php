@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Config\Environment;
 
+use App\Config\AppConfig;
 use App\Config\ConfigInterface;
 use App\Config\DataFileNames;
 use App\Config\DependencyNames;
@@ -18,14 +19,11 @@ abstract class BaseConfig implements ConfigInterface
 
     public function __construct(
         private DependencyTypeRegistry $dependencyTypeRegistry,
-        private Closure $urlsServiceProvider
+        private Closure $urlsServiceProvider,
+        private AppConfig $appConfig
     ) {
-        $dataPath = getenv('DATA_PATH');
-        $ttlSettings = [
-            DependencyNames::FIXTURES => $this->getFixturesMtimeTTL(),
-            DependencyNames::URLS => $this->getUrlsMtimeTTL(),
-            'general' => $this->getGeneralMtimeTTL(),
-        ];
+        $dataPath = $this->appConfig->getDataPath();
+        $ttlSettings = $this->appConfig->getMtimeCacheTTLSettings();
 
         $this->mtimeCachePathMap = [];
         $this->fixturesPaths = [];
@@ -82,23 +80,8 @@ abstract class BaseConfig implements ConfigInterface
         return $this->mtimeCachePathMap;
     }
 
-    protected function getFixturesMtimeTTL(): int
-    {
-        return (int) getenv('MTIME_CACHE_FIXTURES_TTL');
-    }
-
-    protected function getUrlsMtimeTTL(): int
-    {
-        return (int) getenv('MTIME_CACHE_URLS_TTL');
-    }
-
-    protected function getGeneralMtimeTTL(): int
-    {
-        return (int) getenv('MTIME_CACHE_GENERAL_TTL');
-    }
-
     public function getDefaultCacheTTL(): int
     {
-        return (int) getenv('DEFAULT_CACHE_TTL');
+        return $this->appConfig->getDefaultCacheTtl();
     }
 }

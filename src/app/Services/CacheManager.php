@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Config\AppConfig;
 use App\Utils\Log;
 use Phalcon\Cache\Cache;
 
@@ -18,11 +19,17 @@ class CacheManager
 
     public function __construct(
         private ?Cache $externalCache = null,
-        private ?int $defaultTtl = null,
-        ?int $maxLocalCacheSize = null
+        private ?AppConfig $appConfig = null,
+        private ?int $defaultTtl = null
     ) {
-        $this->defaultTtl = $defaultTtl ?? (int) getenv('DEFAULT_CACHE_TTL') ?: 3600;
-        $this->maxLocalCacheSize = $maxLocalCacheSize ?? (int) getenv('LOCAL_CACHE_MAX_SIZE') ?: 1000;
+        if ($this->appConfig) {
+            $this->defaultTtl = $this->appConfig->getDefaultCacheTtl();
+            $this->maxLocalCacheSize = $this->appConfig->getLocalCacheMaxSize();
+        } else {
+            // Fallback for backward compatibility
+            $this->defaultTtl = $defaultTtl ?? 3600;
+            $this->maxLocalCacheSize = 1000;
+        }
     }
 
     public function get(string $key, string $type = 'cache'): mixed

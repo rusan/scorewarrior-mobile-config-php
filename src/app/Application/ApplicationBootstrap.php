@@ -31,12 +31,20 @@ class ApplicationBootstrap
     
     private static function initializeLogging(): void
     {
-        $logLevel = getenv('APP_LOG_LEVEL') ?: 'info';
-        Log::setLevel($logLevel);
+        $appConfig = \App\Config\AppConfig::fromEnv();
         
+        // Validate configuration
+        $errors = $appConfig->validate();
+        if (!empty($errors)) {
+            foreach ($errors as $error) {
+                error_log("Configuration error: $error");
+            }
+            throw new \RuntimeException('Invalid configuration: ' . implode(', ', $errors));
+        }
+        
+        Log::setLevel($appConfig->getLogLevel());
 
-        $env = getenv('APP_ENV') ?: 'dev';
-        if ($env === 'testing' || $env === 'dev') {
+        if ($appConfig->isTesting() || $appConfig->isDevelopment()) {
             error_reporting(E_ALL & ~E_NOTICE);
         }
     }
