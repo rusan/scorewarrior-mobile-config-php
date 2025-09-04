@@ -7,7 +7,13 @@ use Tests\TestCase;
 
 final class ApiSmokeTest extends TestCase
 {
-    private string $baseUrl = 'http://127.0.0.1:8080';
+    private string $baseUrl;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->baseUrl = getenv('BASE_URL') ?: 'http://127.0.0.1:8080';
+    }
 
     private function httpGet(string $path): array
     {

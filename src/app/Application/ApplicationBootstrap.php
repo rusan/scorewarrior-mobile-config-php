@@ -50,7 +50,9 @@ class ApplicationBootstrap
     
     private static function registerMiddleware(Micro $app, Di $di): void
     {
-        MiddlewareManager::createDefault($di)->register($app);
+        $requestValidator = $di->getShared('requestValidator');
+        $parameterService = $di->getShared('requestParameterService');
+        MiddlewareManager::createDefault($requestValidator, $parameterService)->register($app);
     }
     
     private static function registerRoutes(Micro $app): void
@@ -81,11 +83,7 @@ class ApplicationBootstrap
                 $lines[] = sprintf('%s %d', $metricName, (int) $value);
             }
             $body = implode("\n", $lines) . "\n";
-            $resp = new \Phalcon\Http\Response();
-            $resp->setStatusCode(200, 'OK');
-            $resp->setContentType('text/plain');
-            $resp->setContent($body);
-            return $resp;
+            return \App\Utils\Http::text(200, $body);
         });
     }
 }

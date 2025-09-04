@@ -28,20 +28,10 @@ class MiddlewareManager
         }
     }
     
-    public static function createDefault(Di $di): self
+    public static function createDefault(RequestValidator $requestValidator, RequestParameterService $parameterService): self
     {
         $manager = new self();
-        
-        $requestValidator = $di->getShared('requestValidator');
-        $parameterService = $di->getShared('requestParameterService');
-        
-        if ($requestValidator === null) {
-            throw new \RuntimeException('RequestValidator not found in DI container');
-        }
-        if ($parameterService === null) {
-            throw new \RuntimeException('RequestParameterService not found in DI container');
-        }
-        
+
         $validationMiddleware = new ValidationMiddleware($requestValidator, $parameterService);
         
         $manager->add(new NotFoundMiddleware())

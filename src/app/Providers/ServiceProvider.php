@@ -63,7 +63,10 @@ class ServiceProvider
     {
         $di->setShared('config', function () use ($di) {
             $dependencyTypeRegistry = $di->getShared('dependencyTypeRegistry');
-            return ConfigFactory::create($dependencyTypeRegistry);
+            $urlsServiceProvider = function () use ($di) {
+                return $di->getShared('urlsService');
+            };
+            return ConfigFactory::create($dependencyTypeRegistry, $urlsServiceProvider);
         });
 
         $di->setShared('ttlConfigService', function () {

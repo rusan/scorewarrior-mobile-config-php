@@ -18,6 +18,9 @@ curl -s http://127.0.0.1:8080/health
 docker compose exec app ./vendor/bin/phpunit
 ```
 
+> Если порт 8080 занят: остановите контейнер(ы), которые его используют (`docker ps`, затем `docker rm -f <container>`),
+> или поправьте порт в `docker-compose.yml` (например, на `18080:8080`) и обращайтесь к `http://127.0.0.1:18080`.
+
 ## Development Setup
 
 1. **Клонируйте репозиторий**

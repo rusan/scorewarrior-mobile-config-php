@@ -20,4 +20,13 @@ final class Http
     {
         return self::json($code, ['error' => ['code' => $code, 'message' => $message]]);
     }
+
+    public static function text(int $code, string $body, string $contentType = 'text/plain'): Response
+    {
+        $res = new Response();
+        $res->setStatusCode($code);
+        $res->setHeader('Content-Type', $contentType);
+        $res->setContent($body);
+        return $res;
+    }
 }

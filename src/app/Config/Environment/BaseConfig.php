@@ -8,7 +8,7 @@ use App\Config\DataFileNames;
 use App\Config\DependencyNames;
 use App\Services\DependencyTypeRegistry;
 use App\Services\UrlsService;
-use Phalcon\Di\Di;
+use Closure;
 
 abstract class BaseConfig implements ConfigInterface
 {
@@ -17,7 +17,8 @@ abstract class BaseConfig implements ConfigInterface
     private array $mtimeCacheTTLSettings;
 
     public function __construct(
-        private DependencyTypeRegistry $dependencyTypeRegistry
+        private DependencyTypeRegistry $dependencyTypeRegistry,
+        private Closure $urlsServiceProvider
     ) {
         $dataPath = getenv('DATA_PATH');
         $ttlSettings = [
@@ -41,7 +42,9 @@ abstract class BaseConfig implements ConfigInterface
 
     private function getUrlsService(): UrlsService
     {
-        return Di::getDefault()->getShared('urlsService');
+        /** @var UrlsService $service */
+        $service = ($this->urlsServiceProvider)();
+        return $service;
     }
 
     public function getBackendJsonRpcUrl(): string
