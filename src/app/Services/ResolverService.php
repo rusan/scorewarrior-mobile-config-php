@@ -12,8 +12,6 @@ use App\Utils\Semver;
 
 class ResolverService
 {
-    /** @var array<string, array{version:string,hash:string}> */
-    private array $localCache = [];
 
     public function __construct(
         private FixturesService $fixturesService,
@@ -41,14 +39,8 @@ class ResolverService
         $mtime = $this->getMtimeForType($dependencyType, $platform);
         $cacheKey = CacheKeyBuilder::resolver($platform, $appVersion, null, null, $mtime, $dependencyType);
 
-        if (isset($this->localCache[$cacheKey])) {
-            Log::info('resolver_local_cache_hit', ['kind' => $dependencyType, 'key' => $cacheKey]);
-            return $this->localCache[$cacheKey];
-        }
-
         $cachedResult = $this->cacheManager->get($cacheKey, 'resolver');
         if ($cachedResult !== null) {
-            $this->localCache[$cacheKey] = $cachedResult;
             return $cachedResult;
         }
 
@@ -77,8 +69,7 @@ class ResolverService
         }
         $res = ['version' => $best, 'hash' => $map[$best]];
 
-        $this->localCache[$cacheKey] = $res;
-        Log::info('resolver_local_cache_set', ['kind' => $dependencyType, 'key' => $cacheKey, 'version' => $best]);
+        Log::info('resolver_cache_set', ['kind' => $dependencyType, 'key' => $cacheKey, 'version' => $best]);
         $ttlSettings = $this->config->getMtimeCacheTTLSettings();
         $this->cacheManager->set($cacheKey, $res, 'resolver', $ttlSettings['general']);
 

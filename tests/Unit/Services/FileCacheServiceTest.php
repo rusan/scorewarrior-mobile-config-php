@@ -91,25 +91,21 @@ class FileCacheServiceTest extends TestCase
         $this->assertEquals($cachedData, $result);
     }
 
-    public function testLocalCache(): void
+    public function testLocalCacheRemoved(): void
     {
-        $this->cacheManager->expects($this->once())
+        $data = ['from' => 'cache'];
+        // First call: miss external cache, read file, set cache
+        $this->cacheManager->expects($this->exactly(2))
             ->method('get')
-            ->willReturn(null);
+            ->willReturnOnConsecutiveCalls(null, $data);
 
         $this->cacheManager->expects($this->once())
             ->method('set');
 
-        $result1 = $this->fileCacheService->loadJsonFile('fixtures', $this->tempFilePath);
-        $this->cacheManager->expects($this->never())
-            ->method('get');
-
-        $this->cacheManager->expects($this->never())
-            ->method('set');
-
+        $this->fileCacheService->loadJsonFile('fixtures', $this->tempFilePath);
+        // Second call: should hit external cache (since local cache removed)
         $result2 = $this->fileCacheService->loadJsonFile('fixtures', $this->tempFilePath);
-
-        $this->assertEquals($result1, $result2);
+        $this->assertEquals($data, $result2);
     }
 
 

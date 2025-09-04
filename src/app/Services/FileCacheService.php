@@ -9,8 +9,6 @@ use App\Utils\Log;
 
 class FileCacheService
 {
-    /** @var array<string, mixed> */
-    private array $localCache = [];
 
     public function __construct(
         private TTLConfigService $ttlConfig,
@@ -22,16 +20,9 @@ class FileCacheService
     {
         $mtime = $this->mtimeCacheService->getMtime($filePath);
         $cacheKey = $this->buildCacheKey($cacheType, $filePath, $mtime);
-        $localCache = $this->localCache[$cacheKey] ?? null;
-
-        if ($localCache !== null) {
-            Log::info('file_local_cache_hit', ['path' => $filePath, 'mtime' => $mtime]);
-            return $localCache;
-        }
 
         $cachedResult = $this->cacheManager->get($cacheKey, $cacheType);
         if ($cachedResult !== null) {
-            $this->localCache[$cacheKey] = $cachedResult;
             return $cachedResult;
         }
 
@@ -52,7 +43,6 @@ class FileCacheService
             return [];
         }
 
-        $this->localCache[$cacheKey] = $decoded;
         $ttl = $this->ttlConfig->getTTLForCacheType($cacheType);
         $this->cacheManager->set($cacheKey, $decoded, $cacheType, $ttl);
 
