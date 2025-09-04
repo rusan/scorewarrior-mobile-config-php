@@ -3,12 +3,20 @@ declare(strict_types=1);
 
 namespace App\Config;
 
+use App\Services\DependencyTypeRegistry;
+use App\Services\UrlsService;
+use Closure;
+
 /**
- * Centralized application configuration
- * Replaces scattered getenv() calls throughout the codebase
+ * Application configuration
+ * Centralized configuration combining environment settings and cache configuration
  */
-class AppConfig
+class Config implements ConfigInterface
 {
+    private array $mtimeCachePathMap;
+    private array $fixturesPaths;
+    private array $mtimeCacheTTLSettings;
+
     public function __construct(
         private string $appEnv,
         private string $logLevel,
@@ -18,10 +26,16 @@ class AppConfig
         private int $mtimeCacheGeneralTtl,
         private int $defaultCacheTtl,
         private int $localCacheMaxSize,
-    ) {}
+        private DependencyTypeRegistry $dependencyTypeRegistry,
+        private Closure $urlsServiceProvider
+    ) {
+        $this->initializePaths();
+    }
 
-    public static function fromEnv(): self
-    {
+    public static function fromEnv(
+        DependencyTypeRegistry $dependencyTypeRegistry,
+        Closure $urlsServiceProvider
+    ): self {
         return new self(
             appEnv: getenv('APP_ENV') ?: 'dev',
             logLevel: getenv('APP_LOG_LEVEL') ?: 'info',
@@ -31,7 +45,33 @@ class AppConfig
             mtimeCacheGeneralTtl: (int) (getenv('MTIME_CACHE_GENERAL_TTL') ?: 5),
             defaultCacheTtl: (int) (getenv('DEFAULT_CACHE_TTL') ?: 3600),
             localCacheMaxSize: (int) (getenv('LOCAL_CACHE_MAX_SIZE') ?: 1000),
+            dependencyTypeRegistry: $dependencyTypeRegistry,
+            urlsServiceProvider: $urlsServiceProvider
         );
+    }
+
+    private function initializePaths(): void
+    {
+        $ttlSettings = $this->getMtimeCacheTTLSettings();
+
+        $this->mtimeCachePathMap = [];
+        $this->fixturesPaths = [];
+        $this->mtimeCacheTTLSettings = $ttlSettings;
+        
+        $this->mtimeCachePathMap[$this->getUrlsConfigPath()] = $ttlSettings[DependencyNames::URLS];
+        
+        foreach ($this->dependencyTypeRegistry->getAll() as $type) {
+            $filePath = $this->dataPath . '/' . $type->getFileName();
+            $this->mtimeCachePathMap[$filePath] = $ttlSettings[DependencyNames::FIXTURES];
+            $this->fixturesPaths[$type->getName()] = $filePath;
+        }
+    }
+
+    private function getUrlsService(): UrlsService
+    {
+        /** @var UrlsService $service */
+        $service = ($this->urlsServiceProvider)();
+        return $service;
     }
 
     // Environment settings
@@ -107,7 +147,58 @@ class AppConfig
         return $this->localCacheMaxSize;
     }
 
-    // Structured configuration arrays for backward compatibility
+    // ConfigInterface implementation
+    public function getBackendJsonRpcUrl(): string
+    {
+        return $this->getUrlsService()->getBackendJsonRpcUrl();
+    }
+
+    public function getNotificationsJsonRpcUrl(): string
+    {
+        return $this->getUrlsService()->getNotificationsJsonRpcUrl();
+    }
+
+    public function getAssetsUrls(): array
+    {
+        return $this->getUrlsService()->getAssetsUrls();
+    }
+
+    public function getDefinitionsUrls(): array
+    {
+        return $this->getUrlsService()->getDefinitionsUrls();
+    }
+
+    public function getFixturesPaths(): array
+    {
+        return $this->fixturesPaths;
+    }
+
+    public function getCacheSettings(): array
+    {
+        return match (true) {
+            $this->isProduction() => [
+                'adapter' => 'apcu',
+                'options' => [
+                    'defaultSerializer' => 'Php',
+                    'lifetime' => 3600,
+                ],
+                'prefix' => 'prod_cache_',
+            ],
+            default => [
+                'adapter' => 'memory',
+                'options' => [
+                    'lifetime' => 60,
+                ],
+                'prefix' => 'dev_cache_',
+            ],
+        };
+    }
+
+    public function isDebugMode(): bool
+    {
+        return !$this->isProduction();
+    }
+
     public function getMtimeCacheTTLSettings(): array
     {
         return [
@@ -115,6 +206,11 @@ class AppConfig
             'urls' => $this->mtimeCacheUrlsTtl,
             'general' => $this->mtimeCacheGeneralTtl,
         ];
+    }
+
+    public function getMtimeCachePathMap(): array
+    {
+        return $this->mtimeCachePathMap;
     }
 
     // Validation
@@ -164,6 +260,8 @@ class AppConfig
             'mtime_cache_general_ttl' => $this->mtimeCacheGeneralTtl,
             'default_cache_ttl' => $this->defaultCacheTtl,
             'local_cache_max_size' => $this->localCacheMaxSize,
+            'is_production' => $this->isProduction(),
+            'is_debug_mode' => $this->isDebugMode(),
         ];
     }
 }

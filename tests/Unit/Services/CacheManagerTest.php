@@ -16,11 +16,11 @@ class CacheManagerTest extends TestCase
     {
         parent::setUp();
         
-        $appConfig = $this->createMock(\App\Config\AppConfig::class);
-        $appConfig->method('getDefaultCacheTtl')->willReturn(3600);
-        $appConfig->method('getLocalCacheMaxSize')->willReturn(3);
+        $config = $this->createMock(\App\Config\ConfigInterface::class);
+        $config->method('getDefaultCacheTtl')->willReturn(3600);
+        $config->method('getLocalCacheMaxSize')->willReturn(3);
         
-        $this->cacheManager = new CacheManager(null, $appConfig);
+        $this->cacheManager = new CacheManager(null, $config);
     }
 
     public function testLruEviction(): void
@@ -62,11 +62,11 @@ class CacheManagerTest extends TestCase
 
     public function testCacheSizeLimit(): void
     {
-        $appConfig = $this->createMock(\App\Config\AppConfig::class);
-        $appConfig->method('getDefaultCacheTtl')->willReturn(3600);
-        $appConfig->method('getLocalCacheMaxSize')->willReturn(2);
+        $config = $this->createMock(\App\Config\ConfigInterface::class);
+        $config->method('getDefaultCacheTtl')->willReturn(3600);
+        $config->method('getLocalCacheMaxSize')->willReturn(2);
         
-        $cacheManager = new CacheManager(null, $appConfig);
+        $cacheManager = new CacheManager(null, $config);
         
         $cacheManager->set('key1', 'value1');
         $cacheManager->set('key2', 'value2');

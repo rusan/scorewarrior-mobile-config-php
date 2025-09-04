@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Config\ConfigInterface;
-use App\Config\AppConfig;
 use App\Config\DataFileNames;
 use App\Config\DependencyNames;
 use App\Services\CacheManager;
@@ -17,9 +16,9 @@ class UrlsService
 
     public function __construct(
         private FileCacheService $fileCacheService,
-        private AppConfig $appConfig
+        private ConfigInterface $config
     ) {
-        $this->configPath = $this->appConfig->getUrlsConfigPath();
+        $this->configPath = $this->config->getUrlsConfigPath();
     }
 
     public function getBackendJsonRpcUrl(): string

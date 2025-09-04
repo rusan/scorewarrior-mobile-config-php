@@ -31,10 +31,16 @@ class ApplicationBootstrap
     
     private static function initializeLogging(): void
     {
-        $appConfig = \App\Config\AppConfig::fromEnv();
+        // Create a minimal config for validation during bootstrap
+        $dependencyTypeRegistry = new \App\Services\DependencyTypeRegistry();
+        $urlsServiceProvider = function () {
+            throw new \RuntimeException('UrlsService not available during bootstrap');
+        };
+        
+        $config = \App\Config\Config::fromEnv($dependencyTypeRegistry, $urlsServiceProvider);
         
         // Validate configuration
-        $errors = $appConfig->validate();
+        $errors = $config->validate();
         if (!empty($errors)) {
             foreach ($errors as $error) {
                 error_log("Configuration error: $error");
@@ -42,9 +48,9 @@ class ApplicationBootstrap
             throw new \RuntimeException('Invalid configuration: ' . implode(', ', $errors));
         }
         
-        Log::setLevel($appConfig->getLogLevel());
+        Log::setLevel($config->getLogLevel());
 
-        if ($appConfig->isTesting() || $appConfig->isDevelopment()) {
+        if ($config->isTesting() || $config->isDevelopment()) {
             error_reporting(E_ALL & ~E_NOTICE);
         }
     }

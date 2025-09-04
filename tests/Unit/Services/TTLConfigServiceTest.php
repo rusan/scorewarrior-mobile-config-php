@@ -15,12 +15,12 @@ class TTLConfigServiceTest extends TestCase
     {
         parent::setUp();
         
-        $appConfig = $this->createMock(\App\Config\AppConfig::class);
-        $appConfig->method('getMtimeCacheFixturesTtl')->willReturn(3600);
-        $appConfig->method('getMtimeCacheUrlsTtl')->willReturn(60);
-        $appConfig->method('getMtimeCacheGeneralTtl')->willReturn(5);
+        $config = $this->createMock(\App\Config\ConfigInterface::class);
+        $config->method('getMtimeCacheFixturesTtl')->willReturn(3600);
+        $config->method('getMtimeCacheUrlsTtl')->willReturn(60);
+        $config->method('getMtimeCacheGeneralTtl')->willReturn(5);
         
-        $this->service = new TTLConfigService($appConfig);
+        $this->service = new TTLConfigService($config);
     }
 
     public function testGetTTLForCacheTypeFixtures(): void

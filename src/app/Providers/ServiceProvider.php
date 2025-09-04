@@ -63,16 +63,15 @@ class ServiceProvider
     {
         $di->setShared('config', function () use ($di) {
             $dependencyTypeRegistry = $di->getShared('dependencyTypeRegistry');
-            $appConfig = $di->getShared('appConfig');
             $urlsServiceProvider = function () use ($di) {
                 return $di->getShared('urlsService');
             };
-            return ConfigFactory::create($dependencyTypeRegistry, $urlsServiceProvider, $appConfig);
+            return \App\Config\Config::fromEnv($dependencyTypeRegistry, $urlsServiceProvider);
         });
 
         $di->setShared('ttlConfigService', function () use ($di) {
-            $appConfig = $di->getShared('appConfig');
-            return new TTLConfigService($appConfig);
+            $config = $di->getShared('config');
+            return new TTLConfigService($config);
         });
     }
 
@@ -94,8 +93,8 @@ class ServiceProvider
 
         $di->setShared('cacheManager', function () use ($di): CacheManager {
             $cache = $di->getShared('cache');
-            $appConfig = $di->getShared('appConfig');
-            return new CacheManager($cache, $appConfig);
+            $config = $di->getShared('config');
+            return new CacheManager($cache, $config);
         });
 
         $di->setShared('mtimeCacheService', function () use ($di) {
@@ -118,8 +117,8 @@ class ServiceProvider
     {
         $di->setShared('urlsService', function () use ($di) {
             $fileCacheService = $di->getShared('fileCacheService');
-            $appConfig = $di->getShared('appConfig');
-            return new UrlsService($fileCacheService, $appConfig);
+            $config = $di->getShared('config');
+            return new UrlsService($fileCacheService, $config);
         });
 
         $di->setShared('fixturesService', function () use ($di) {
@@ -159,9 +158,7 @@ class ServiceProvider
             return new RequestParameterService();
         });
 
-        $di->setShared('appConfig', function () {
-            return \App\Config\AppConfig::fromEnv();
-        });
+        // AppConfig is now part of UnifiedConfig, no separate registration needed
 
         $di->setShared('logger', function () {
             return new \App\Services\StructuredLogger();

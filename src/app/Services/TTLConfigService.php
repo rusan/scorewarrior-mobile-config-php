@@ -3,36 +3,36 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Config\AppConfig;
+use App\Config\ConfigInterface;
 use App\Config\DependencyNames;
 
 class TTLConfigService
 {
     public function __construct(
-        private AppConfig $appConfig
+        private ConfigInterface $config
     ) {}
 
     public function getTTLForCacheType(string $cacheType): int
     {
         return match($cacheType) {
-            DependencyNames::FIXTURES => $this->appConfig->getMtimeCacheFixturesTtl(),
-            DependencyNames::URLS => $this->appConfig->getMtimeCacheUrlsTtl(),
-            default => $this->appConfig->getMtimeCacheGeneralTtl()
+            DependencyNames::FIXTURES => $this->config->getMtimeCacheFixturesTtl(),
+            DependencyNames::URLS => $this->config->getMtimeCacheUrlsTtl(),
+            default => $this->config->getMtimeCacheGeneralTtl()
         };
     }
 
     public function getFixturesTTL(): int
     {
-        return $this->appConfig->getMtimeCacheFixturesTtl();
+        return $this->config->getMtimeCacheFixturesTtl();
     }
 
     public function getUrlsTTL(): int
     {
-        return $this->appConfig->getMtimeCacheUrlsTtl();
+        return $this->config->getMtimeCacheUrlsTtl();
     }
 
     public function getGeneralTTL(): int
     {
-        return $this->appConfig->getMtimeCacheGeneralTtl();
+        return $this->config->getMtimeCacheGeneralTtl();
     }
 }
