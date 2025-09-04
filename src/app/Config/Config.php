@@ -15,7 +15,6 @@ class Config implements ConfigInterface
 {
     private array $mtimeCachePathMap;
     private array $fixturesPaths;
-    private array $mtimeCacheTTLSettings;
 
     public function __construct(
         private string $appEnv,
@@ -56,7 +55,6 @@ class Config implements ConfigInterface
 
         $this->mtimeCachePathMap = [];
         $this->fixturesPaths = [];
-        $this->mtimeCacheTTLSettings = $ttlSettings;
         
         $this->mtimeCachePathMap[$this->getUrlsConfigPath()] = $ttlSettings[DependencyNames::URLS];
         
