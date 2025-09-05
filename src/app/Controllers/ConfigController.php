@@ -14,11 +14,19 @@ use Phalcon\Mvc\Micro;
 use Phalcon\Mvc\Controller;
 final class ConfigController extends Controller
 {
-    public function __construct(
-        private ConfigService $configService,
-        private FixturesService $fixturesService,
-        private ResolverService $resolverService
-    ) {}
+    private ConfigService $configService;
+    private FixturesService $fixturesService;
+    private ResolverService $resolverService;
+    
+    public function setServices(
+        ConfigService $configService,
+        FixturesService $fixturesService,
+        ResolverService $resolverService
+    ): void {
+        $this->configService = $configService;
+        $this->fixturesService = $fixturesService;
+        $this->resolverService = $resolverService;
+    }
 
     public function getConfig(Micro $app): \Phalcon\Http\Response
     {
