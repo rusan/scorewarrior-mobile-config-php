@@ -50,22 +50,22 @@ class ApplicationBootstrap
     
     private static function registerMiddleware(Micro $app, Di $di): void
     {
-        $requestValidator = $di->getShared('requestValidator');
-        $logger = $di->getShared('logger');
+        $requestValidator = $di->getShared(\App\Validators\RequestValidator::class);
+        $logger = $di->getShared(\App\Contracts\LoggerInterface::class);
         MiddlewareManager::createDefault($requestValidator, $logger)->register($app);
     }
     
     private static function registerRoutes(Micro $app): void
     {
         $app->get('/health', function () use ($app) {
-            $service = $app->getDI()->getShared('healthService');
+            $service = $app->getDI()->getShared(\App\Services\HealthService::class);
             $payload = $service->check();
             $payload['metrics'] = ['log_counters' => Log::getCounters()];
             return \App\Utils\Http::json(\App\Config\HttpStatusCodes::OK, $payload);
         });
         
         $app->get('/config', function () use ($app) {
-            $controller = $app->getDI()->getShared('configController');
+            $controller = $app->getDI()->getShared(\App\Controllers\ConfigController::class);
             return $controller->getConfig($app);
         });
 

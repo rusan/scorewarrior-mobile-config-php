@@ -70,8 +70,8 @@ class ResolverService
         $res = ['version' => $best, 'hash' => $map[$best]];
 
         $ttlSettings = $this->config->getMtimeCacheTTLSettings();
-        $this->logger->logCacheSet($cacheKey, 'resolver', $ttlSettings['general']);
-        $this->cacheManager->set($cacheKey, $res, 'resolver', $ttlSettings['general']);
+        $this->logger->logCacheSet($cacheKey, 'resolver', $ttlSettings->general);
+        $this->cacheManager->set($cacheKey, $res, 'resolver', $ttlSettings->general);
 
         return $res;
     }

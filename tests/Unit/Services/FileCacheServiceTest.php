@@ -27,11 +27,11 @@ class FileCacheServiceTest extends TestCase
             'nested' => ['key' => 'value']
         ]));
         $this->config = $this->createMock(ConfigInterface::class);
-        $this->config->method('getMtimeCacheTTLSettings')->willReturn([
-            'fixtures' => 3600,
-            'urls' => 7200,
-            'general' => 1800,
-        ]);
+        $this->config->method('getMtimeCacheTTLSettings')->willReturn(new \App\Config\MtimeTtlSettings(
+            fixtures: 3600,
+            urls: 7200,
+            general: 1800,
+        ));
 
         $this->cacheManager = $this->createMock(CacheManager::class);
         $this->mtimeCacheService = $this->createMock(MtimeCacheService::class);

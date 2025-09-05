@@ -30,6 +30,11 @@ class ResolverServiceTest extends TestCase
         
         $this->fixturesService = $this->createMock(FixturesService::class);
         $this->config = $this->createMock(ConfigInterface::class);
+        $this->config->method('getMtimeCacheTTLSettings')->willReturn(new \App\Config\MtimeTtlSettings(
+            fixtures: 3600,
+            urls: 60,
+            general: 5,
+        ));
         $this->cacheManager = $this->createMock(CacheManager::class);
         $this->dependencyTypeRegistry = $this->createMock(DependencyTypeRegistry::class);
         $this->mtimeCacheService = $this->createMock(MtimeCacheService::class);

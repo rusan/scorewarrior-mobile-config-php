@@ -53,7 +53,7 @@ class CacheManager
         return null;
     }
 
-    public function set(string $key, $value, string $type = 'cache', ?int $ttl = null): void
+    public function set(string $key, mixed $value, string $type = 'cache', ?int $ttl = null): void
     {
         $this->setLocalCache($key, $value);
         Log::info("{$type}_local_cache_set", ['key' => $key]);
@@ -80,7 +80,7 @@ class CacheManager
         Log::info("{$type}_local_cache_cleared_all", ['count' => $count]);
     }
 
-    public function remember(string $key, callable $callback, string $type = 'cache', ?int $ttl = null)
+    public function remember(string $key, callable $callback, string $type = 'cache', ?int $ttl = null): mixed
     {
         $value = $this->get($key, $type);
         if ($value !== null) {

@@ -15,11 +15,11 @@ interface ConfigInterface
 
     public function getFixturesPaths(): array;
 
-    public function getCacheSettings(): array;
+    public function getCacheSettings(): CacheFactorySettings;
 
     public function isDebugMode(): bool;
 
-    public function getMtimeCacheTTLSettings(): array;
+    public function getMtimeCacheTTLSettings(): MtimeTtlSettings;
 
     public function getMtimeCachePathMap(): array;
 

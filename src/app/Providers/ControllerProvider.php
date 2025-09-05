@@ -10,11 +10,11 @@ class ControllerProvider
 {
     public static function register(Di $di): void
     {
-        $di->setShared('configController', function () use ($di) {
+        $di->setShared(ConfigController::class, function () use ($di) {
             return new ConfigController(
-                $di->getShared('configService'),
-                $di->getShared('fixturesService'),
-                $di->getShared('resolverService')
+                $di->getShared(\App\Services\ConfigService::class),
+                $di->getShared(\App\Services\FixturesService::class),
+                $di->getShared(\App\Services\ResolverService::class)
             );
         });
     }

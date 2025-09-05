@@ -46,35 +46,35 @@ final class CacheConfig
         return $this->localCacheMaxSize;
     }
 
-    public function getMtimeCacheTTLSettings(): array
+    public function getMtimeCacheTTLSettings(): MtimeTtlSettings
     {
-        return [
-            'fixtures' => $this->mtimeCacheFixturesTtl,
-            'urls' => $this->mtimeCacheUrlsTtl,
-            'general' => $this->mtimeCacheGeneralTtl,
-        ];
+        return new MtimeTtlSettings(
+            fixtures: $this->mtimeCacheFixturesTtl,
+            urls: $this->mtimeCacheUrlsTtl,
+            general: $this->mtimeCacheGeneralTtl,
+        );
     }
 
-    public function getCacheSettings(bool $isProduction): array
+    public function getCacheSettings(bool $isProduction): CacheFactorySettings
     {
         if ($isProduction) {
-            return [
-                'adapter' => self::PROD_ADAPTER,
-                'options' => [
+            return new CacheFactorySettings(
+                adapter: self::PROD_ADAPTER,
+                options: [
                     'defaultSerializer' => self::DEFAULT_SERIALIZER,
                     'lifetime' => self::PROD_DEFAULT_LIFETIME,
                 ],
-                'prefix' => self::PROD_PREFIX,
-            ];
+                prefix: self::PROD_PREFIX,
+            );
         }
 
-        return [
-            'adapter' => self::DEV_ADAPTER,
-            'options' => [
+        return new CacheFactorySettings(
+            adapter: self::DEV_ADAPTER,
+            options: [
                 'lifetime' => self::DEV_DEFAULT_LIFETIME,
             ],
-            'prefix' => self::DEV_PREFIX,
-        ];
+            prefix: self::DEV_PREFIX,
+        );
     }
 }
 

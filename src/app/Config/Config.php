@@ -75,10 +75,10 @@ class Config implements ConfigInterface
         // Fixtures paths derived from PathsConfig
         $this->fixturesPaths = $this->pathsConfig->getFixturesPaths();
 
-        $this->mtimeCachePathMap[$this->pathsConfig->getUrlsConfigPath()] = $ttlSettings[CacheTypes::URLS];
+        $this->mtimeCachePathMap[$this->pathsConfig->getUrlsConfigPath()] = $ttlSettings->urls;
 
         foreach ($this->fixturesPaths as $name => $filePath) {
-            $this->mtimeCachePathMap[$filePath] = $ttlSettings[CacheTypes::FIXTURES];
+            $this->mtimeCachePathMap[$filePath] = $ttlSettings->fixtures;
         }
     }
 
@@ -188,7 +188,7 @@ class Config implements ConfigInterface
         return $this->fixturesPaths;
     }
 
-    public function getCacheSettings(): array
+    public function getCacheSettings(): CacheFactorySettings
     {
         return $this->cacheConfig->getCacheSettings($this->isProduction());
     }
@@ -198,7 +198,7 @@ class Config implements ConfigInterface
         return !$this->isProduction();
     }
 
-    public function getMtimeCacheTTLSettings(): array
+    public function getMtimeCacheTTLSettings(): MtimeTtlSettings
     {
         return $this->cacheConfig->getMtimeCacheTTLSettings();
     }
