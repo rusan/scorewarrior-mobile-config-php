@@ -5,7 +5,6 @@ namespace Tests\Unit\Services;
 
 use App\Config\ConfigInterface;
 use App\Services\CacheManager;
-use PHPUnit\Framework\MockObject\MockObject;
 use Tests\TestCase;
 
 class CacheManagerTest extends TestCase
@@ -16,7 +15,7 @@ class CacheManagerTest extends TestCase
     {
         parent::setUp();
         
-        $config = $this->createMock(\App\Config\ConfigInterface::class);
+        $config = $this->createMock(ConfigInterface::class);
         $config->method('getDefaultCacheTtl')->willReturn(3600);
         $config->method('getLocalCacheMaxSize')->willReturn(3);
         
@@ -63,7 +62,7 @@ class CacheManagerTest extends TestCase
 
     public function testCacheSizeLimit(): void
     {
-        $config = $this->createMock(\App\Config\ConfigInterface::class);
+        $config = $this->createMock(ConfigInterface::class);
         $config->method('getDefaultCacheTtl')->willReturn(3600);
         $config->method('getLocalCacheMaxSize')->willReturn(2);
         
