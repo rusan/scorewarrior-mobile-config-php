@@ -14,9 +14,7 @@ use Closure;
  */
 class Config implements ConfigInterface
 {
-    private const PRODUCTION_ENVIRONMENTS = ['prod' => true, 'production' => true];
-    private const DEVELOPMENT_ENVIRONMENTS = ['dev' => true, 'development' => true];
-    private const TESTING_ENVIRONMENTS = ['testing' => true];
+    // Environment mapping moved to App\Config\Environment
     
     private array $mtimeCachePathMap;
     private array $fixturesPaths;
@@ -41,8 +39,8 @@ class Config implements ConfigInterface
         Closure $urlsServiceProvider
     ): self {
         return new self(
-            appEnv: getenv('APP_ENV') ?: 'dev',
-            logLevel: getenv('APP_LOG_LEVEL') ?: 'info',
+            appEnv: getenv('APP_ENV') ?: Environment::DEFAULT_ENV,
+            logLevel: getenv('APP_LOG_LEVEL') ?: Environment::DEFAULT_LOG_LEVEL,
             dataPath: getenv('DATA_PATH') ?: '/local/data',
             mtimeCacheFixturesTtl: (int) (getenv('MTIME_CACHE_FIXTURES_TTL') ?: 3600),
             mtimeCacheUrlsTtl: (int) (getenv('MTIME_CACHE_URLS_TTL') ?: 60),
@@ -90,17 +88,17 @@ class Config implements ConfigInterface
 
     public function isProduction(): bool
     {
-        return isset(self::PRODUCTION_ENVIRONMENTS[strtolower($this->appEnv)]);
+        return Environment::isProduction($this->appEnv);
     }
 
     public function isDevelopment(): bool
     {
-        return isset(self::DEVELOPMENT_ENVIRONMENTS[strtolower($this->appEnv)]);
+        return Environment::isDevelopment($this->appEnv);
     }
 
     public function isTesting(): bool
     {
-        return isset(self::TESTING_ENVIRONMENTS[strtolower($this->appEnv)]);
+        return Environment::isTesting($this->appEnv);
     }
 
     // Paths
