@@ -277,8 +277,35 @@ class NoOpCache implements Cache {
 
 ### 4. Долгосрочные улучшения
 - [x] Пересмотреть архитектуру DI
-- [ ] Внедрить строгую типизацию
-- [ ] Добавить валидацию на уровне конструкторов
+- [x] Внедрить строгую типизацию
+- [x] Добавить валидацию на уровне конструкторов
+
+**Выполненные улучшения:**
+
+#### DI Architecture Refactoring
+- Рефакторинг Phalcon DI для использования FQCN для application services
+- Вынос Phalcon core service string IDs в константы `DiServiceIds`
+- Удаление неиспользуемых PHP-DI файлов
+- Улучшение композиции зависимостей
+
+#### Type Safety & DTOs
+- Конвертация массивных конфигураций в строго типизированные DTOs:
+  - `CacheFactorySettings` для настроек кеша
+  - `MtimeTtlSettings` для TTL настроек
+- Обновление всех consumers для использования DTO properties
+- Добавление строгой типизации по всему коду
+
+#### Code Quality Improvements
+- Удаление неиспользуемых зависимостей из `ConfigController` и `HealthService`
+- Исправление проблемы с Phalcon Controller constructor (final method)
+- Использование `setServices()` pattern вместо constructor injection
+- Добавление comprehensive Phalcon stub файла для IDE support
+
+#### Testing & Validation
+- Обновление всех тестов для работы с DTOs
+- Исправление проблем с мокированием final DTO классов
+- Все 78 тестов проходят успешно
+- Сохранение обратной совместимости
 
 ## Заключение
 
