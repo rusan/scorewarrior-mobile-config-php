@@ -9,6 +9,9 @@ use Phalcon\Cache\Cache;
 
 class CacheManager
 {
+    private const DEFAULT_TTL_SECONDS = 3600;
+    private const DEFAULT_LOCAL_CACHE_MAX_SIZE = 1000;
+
     /** @var array<string, mixed> */
     private array $localCache = [];
     
@@ -18,7 +21,7 @@ class CacheManager
     private int $maxLocalCacheSize;
 
     public function __construct(
-        private ?Cache $externalCache = null,
+        private Cache $externalCache,
         private ?ConfigInterface $config = null,
         private ?int $defaultTtl = null
     ) {
@@ -27,8 +30,8 @@ class CacheManager
             $this->maxLocalCacheSize = $this->config->getLocalCacheMaxSize();
         } else {
             // Fallback for backward compatibility
-            $this->defaultTtl = $defaultTtl ?? 3600;
-            $this->maxLocalCacheSize = 1000;
+            $this->defaultTtl = $defaultTtl ?? self::DEFAULT_TTL_SECONDS;
+            $this->maxLocalCacheSize = self::DEFAULT_LOCAL_CACHE_MAX_SIZE;
         }
     }
 
@@ -40,27 +43,23 @@ class CacheManager
             return $this->localCache[$key];
         }
 
-        if ($this->externalCache !== null) {
-            $value = $this->externalCache->get($key, null);
-            if ($value !== null) {
-                Log::info("{$type}_cache_hit", ['key' => $key]);
-                $this->setLocalCache($key, $value);
-                return $value;
-            }
+        $value = $this->externalCache->get($key, null);
+        if ($value !== null) {
+            Log::info("{$type}_cache_hit", ['key' => $key]);
+            $this->setLocalCache($key, $value);
+            return $value;
         }
 
         return null;
     }
 
-    public function set(string $key, $value, string $type = 'cache', ?int $ttl = null): void
+    public function set(string $key, mixed $value, string $type = 'cache', ?int $ttl = null): void
     {
         $this->setLocalCache($key, $value);
         Log::info("{$type}_local_cache_set", ['key' => $key]);
 
-        if ($this->externalCache !== null) {
-            $this->externalCache->set($key, $value, $ttl ?? $this->defaultTtl);
-            Log::info("{$type}_cache_set", ['key' => $key, 'ttl' => $ttl ?? $this->defaultTtl]);
-        }
+        $this->externalCache->set($key, $value, $ttl ?? $this->defaultTtl);
+        Log::info("{$type}_cache_set", ['key' => $key, 'ttl' => $ttl ?? $this->defaultTtl]);
     }
 
     public function delete(string $key, string $type = 'cache'): void
@@ -69,10 +68,8 @@ class CacheManager
         unset($this->accessTimes[$key]);
         Log::info("{$type}_local_cache_cleared", ['key' => $key]);
 
-        if ($this->externalCache !== null) {
-            $this->externalCache->delete($key);
-            Log::info("{$type}_cache_cleared", ['key' => $key]);
-        }
+        $this->externalCache->delete($key);
+        Log::info("{$type}_cache_cleared", ['key' => $key]);
     }
 
     public function clearLocal(string $type = 'cache'): void
@@ -83,7 +80,7 @@ class CacheManager
         Log::info("{$type}_local_cache_cleared_all", ['count' => $count]);
     }
 
-    public function remember(string $key, callable $callback, string $type = 'cache', ?int $ttl = null)
+    public function remember(string $key, callable $callback, string $type = 'cache', ?int $ttl = null): mixed
     {
         $value = $this->get($key, $type);
         if ($value !== null) {

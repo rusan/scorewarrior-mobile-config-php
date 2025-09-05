@@ -9,7 +9,5 @@ interface DependencyTypeInterface
     
     public function getFileName(): string;
     
-    public function getUrlsKey(): string;
-    
     public function isCompatible(string $appVersion, string $candidate): bool;
 }
