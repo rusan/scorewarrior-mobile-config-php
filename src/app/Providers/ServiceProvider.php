@@ -9,7 +9,6 @@ use App\Services\FileCacheService;
 use App\Services\FixturesService;
 use App\Services\MtimeCacheService;
 use App\Services\HealthService;
-use App\Services\RequestParameterService;
 use App\Services\ResolverService;
 use App\Services\UrlsService;
 use Phalcon\Cache\AdapterFactory;

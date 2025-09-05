@@ -182,7 +182,7 @@ curl -i "http://127.0.0.1:8080/config?appVersion=14.2.123&platform=desktop"
 * **`CacheManager`** — управление кэшированием (локальный LRU + внешний) с автоматическим вытеснением
 * **`FileCacheService`** — кэширование файлов с инвалидацией по mtime
 * **`FixturesService`** — загрузка и обработка фикстур
-* **`RequestParameterService`** — извлечение и валидация параметров запросов
+* (удалено) `RequestParameterService` — параметры извлекаются напрямую из `Request`
 
 ### Валидаторы (Validators)
 
