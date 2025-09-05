@@ -6,26 +6,24 @@ namespace App\Controllers;
 use App\Config\RequestParameterNames;
 use App\Config\HttpStatusCodes;
 use App\Services\ConfigService;
-use App\Services\FixturesService;
-use App\Services\ResolverService;
 use App\Utils\Http;
 use App\Utils\Log;
-use Phalcon\Http\Request;
 use Phalcon\Mvc\Micro;
-
-final class ConfigController
+use Phalcon\Mvc\Controller;
+final class ConfigController extends Controller
 {
-    public function __construct(
-        private ConfigService $configService,
-        private FixturesService $fixturesService,
-        private ResolverService $resolverService
-    ) {}
+    private ConfigService $configService;
+    
+    public function setConfigService(ConfigService $configService): void
+    {
+        $this->configService = $configService;
+    }
 
     public function getConfig(Micro $app): \Phalcon\Http\Response
     {
         $request = $app->request;
-        $platform = $request->getQuery(RequestParameterNames::PLATFORM, null, '');
-        $appVer = $request->getQuery(RequestParameterNames::APP_VERSION, null, '');
+        $platform = (string) $request->getQuery(RequestParameterNames::PLATFORM, null, '');
+        $appVer = (string) $request->getQuery(RequestParameterNames::APP_VERSION, null, '');
         $assetsVer = $request->getQuery(RequestParameterNames::ASSETS_VERSION, null, null);
         $defsVer = $request->getQuery(RequestParameterNames::DEFINITIONS_VERSION, null, null);
 

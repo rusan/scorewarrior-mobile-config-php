@@ -5,7 +5,6 @@ namespace App\Middleware;
 
 use App\Contracts\LoggerInterface;
 use App\Validators\RequestValidator;
-use Phalcon\Di\Di;
 use Phalcon\Mvc\Micro;
 
 class MiddlewareManager
@@ -32,11 +31,9 @@ class MiddlewareManager
     {
         $manager = new self();
 
-        $validationMiddleware = new ValidationMiddleware($requestValidator);
-        
         $manager->add(new NotFoundMiddleware())
                 ->add(new LoggingMiddleware($logger))
-                ->add($validationMiddleware)
+                ->add(new ValidationMiddleware($requestValidator))
                 ->add(new ErrorHandlerMiddleware());
         
         return $manager;

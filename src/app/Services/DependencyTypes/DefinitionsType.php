@@ -20,11 +20,6 @@ class DefinitionsType implements DependencyTypeInterface
         return DataFileNames::DEFINITIONS_FIXTURES;
     }
     
-    public function getUrlsKey(): string
-    {
-        return 'definitions_cdn_urls';
-    }
-    
     public function isCompatible(string $appVersion, string $candidate): bool
     {
         $app = Semver::parse($appVersion);

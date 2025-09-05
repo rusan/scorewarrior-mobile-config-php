@@ -34,7 +34,7 @@ class LoggingMiddleware extends AbstractMiddleware
         $logger = $this->logger;
         $app->after(function () use ($app, $t0, $logger) {
             $response = $app->response;
-            $statusCode = 200; // Default
+            $statusCode = \App\Config\HttpStatusCodes::OK; // Default
             
             if ($response && method_exists($response, 'getStatusCode')) {
                 $code = $response->getStatusCode();
