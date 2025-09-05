@@ -23,13 +23,6 @@ interface ConfigInterface
 
     public function getMtimeCachePathMap(): array;
 
-    // Additional methods from AppConfig
-    public function getMtimeCacheFixturesTtl(): int;
-
-    public function getMtimeCacheUrlsTtl(): int;
-
-    public function getMtimeCacheGeneralTtl(): int;
-
     public function getDefaultCacheTtl(): int;
 
     public function getLocalCacheMaxSize(): int;

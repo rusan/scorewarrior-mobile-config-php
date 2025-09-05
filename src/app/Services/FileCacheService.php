@@ -67,10 +67,11 @@ class FileCacheService
     private function getTTLForCacheType(string $cacheType): int
     {
         $settings = $this->config->getMtimeCacheTTLSettings();
+        $general = $settings['general'] ?? $this->config->getDefaultCacheTtl();
         return match ($cacheType) {
-            CacheTypes::FIXTURES => $settings['fixtures'] ?? $this->config->getMtimeCacheGeneralTtl(),
-            CacheTypes::URLS => $settings['urls'] ?? $this->config->getMtimeCacheGeneralTtl(),
-            default => $settings['general'] ?? $this->config->getMtimeCacheGeneralTtl(),
+            CacheTypes::FIXTURES => $settings['fixtures'] ?? $general,
+            CacheTypes::URLS => $settings['urls'] ?? $general,
+            default => $general,
         };
     }
 }

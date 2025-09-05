@@ -7,7 +7,6 @@ use App\Services\CacheManager;
 use App\Services\FileCacheService;
 use App\Services\MtimeCacheService;
 use App\Config\ConfigInterface;
-use App\Utils\Log;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -33,7 +32,6 @@ class FileCacheServiceTest extends TestCase
             'urls' => 7200,
             'general' => 1800,
         ]);
-        $this->config->method('getMtimeCacheGeneralTtl')->willReturn(1800);
 
         $this->cacheManager = $this->createMock(CacheManager::class);
         $this->mtimeCacheService = $this->createMock(MtimeCacheService::class);

@@ -53,7 +53,6 @@ class FixturesServiceTest extends TestCase
             'urls' => 60,
             'general' => 5,
         ]);
-        $configForTtl->method('getMtimeCacheGeneralTtl')->willReturn(5);
         $logger = $this->createMock(\App\Contracts\LoggerInterface::class);
         $this->fileCacheService = new \App\Services\FileCacheService($configForTtl, $this->cacheManager, $this->mtimeCache, $logger);
         $fixturesLogger = $this->createMock(\App\Contracts\LoggerInterface::class);

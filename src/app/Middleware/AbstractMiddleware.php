@@ -6,7 +6,7 @@ namespace App\Middleware;
 use Phalcon\Mvc\Micro;
 use Phalcon\Mvc\Micro\MiddlewareInterface as PhalconMiddlewareInterface;
 
-abstract class AbstractMiddleware implements MiddlewareInterface, PhalconMiddlewareInterface
+abstract class AbstractMiddleware implements PhalconMiddlewareInterface
 {
     abstract public function handle(Micro $app): bool;
     

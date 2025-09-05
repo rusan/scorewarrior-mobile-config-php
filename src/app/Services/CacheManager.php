@@ -9,6 +9,9 @@ use Phalcon\Cache\Cache;
 
 class CacheManager
 {
+    private const DEFAULT_TTL_SECONDS = 3600;
+    private const DEFAULT_LOCAL_CACHE_MAX_SIZE = 1000;
+
     /** @var array<string, mixed> */
     private array $localCache = [];
     
@@ -27,8 +30,8 @@ class CacheManager
             $this->maxLocalCacheSize = $this->config->getLocalCacheMaxSize();
         } else {
             // Fallback for backward compatibility
-            $this->defaultTtl = $defaultTtl ?? 3600;
-            $this->maxLocalCacheSize = 1000;
+            $this->defaultTtl = $defaultTtl ?? self::DEFAULT_TTL_SECONDS;
+            $this->maxLocalCacheSize = self::DEFAULT_LOCAL_CACHE_MAX_SIZE;
         }
     }
 
