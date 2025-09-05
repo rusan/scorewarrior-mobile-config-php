@@ -20,11 +20,6 @@ class AssetsType implements DependencyTypeInterface
         return DataFileNames::ASSETS_FIXTURES;
     }
     
-    public function getUrlsKey(): string
-    {
-        return 'assets_cdn_urls';
-    }
-    
     public function isCompatible(string $appVersion, string $candidate): bool
     {
         $app = Semver::parse($appVersion);

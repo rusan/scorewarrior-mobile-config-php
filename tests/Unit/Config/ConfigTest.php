@@ -121,8 +121,8 @@ class ConfigTest extends TestCase
         );
 
         $prodCacheSettings = $prodConfig->getCacheSettings();
-        $this->assertEquals('apcu', $prodCacheSettings['adapter']);
-        $this->assertEquals('prod_cache_', $prodCacheSettings['prefix']);
+        $this->assertEquals('apcu', $prodCacheSettings->adapter);
+        $this->assertEquals('prod_cache_', $prodCacheSettings->prefix);
         $this->assertFalse($prodConfig->isDebugMode());
 
         // Test development cache settings
@@ -140,8 +140,8 @@ class ConfigTest extends TestCase
         );
 
         $devCacheSettings = $devConfig->getCacheSettings();
-        $this->assertEquals('memory', $devCacheSettings['adapter']);
-        $this->assertEquals('dev_cache_', $devCacheSettings['prefix']);
+        $this->assertEquals('memory', $devCacheSettings->adapter);
+        $this->assertEquals('dev_cache_', $devCacheSettings->prefix);
         $this->assertTrue($devConfig->isDebugMode());
     }
 
@@ -190,13 +190,11 @@ class ConfigTest extends TestCase
             urlsServiceProvider: $urlsServiceProvider
         );
 
-        $expected = [
-            'fixtures' => 1800,
-            'urls' => 120,
-            'general' => 10,
-        ];
-
-        $this->assertEquals($expected, $config->getMtimeCacheTTLSettings());
+        $ttlSettings = $config->getMtimeCacheTTLSettings();
+        $this->assertInstanceOf(\App\Config\MtimeTtlSettings::class, $ttlSettings);
+        $this->assertEquals(1800, $ttlSettings->fixtures);
+        $this->assertEquals(120, $ttlSettings->urls);
+        $this->assertEquals(10, $ttlSettings->general);
     }
 
     public function testValidation(): void

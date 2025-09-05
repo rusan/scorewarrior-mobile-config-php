@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace App\Middleware;
 
 use App\Contracts\LoggerInterface;
-use App\Services\RequestParameterService;
 use App\Validators\RequestValidator;
-use Phalcon\Di\Di;
 use Phalcon\Mvc\Micro;
 
 class MiddlewareManager
@@ -29,15 +27,13 @@ class MiddlewareManager
         }
     }
     
-    public static function createDefault(RequestValidator $requestValidator, RequestParameterService $parameterService, LoggerInterface $logger): self
+    public static function createDefault(RequestValidator $requestValidator, LoggerInterface $logger): self
     {
         $manager = new self();
 
-        $validationMiddleware = new ValidationMiddleware($requestValidator, $parameterService);
-        
         $manager->add(new NotFoundMiddleware())
                 ->add(new LoggingMiddleware($logger))
-                ->add($validationMiddleware)
+                ->add(new ValidationMiddleware($requestValidator))
                 ->add(new ErrorHandlerMiddleware());
         
         return $manager;

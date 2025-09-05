@@ -9,7 +9,6 @@ final class HealthService
 {
     public function __construct(
         private ConfigInterface $config,
-        private FileCacheService $fileCacheService,
         private MtimeCacheService $mtimeCacheService,
     ) {}
 

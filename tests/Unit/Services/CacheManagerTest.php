@@ -5,7 +5,6 @@ namespace Tests\Unit\Services;
 
 use App\Config\ConfigInterface;
 use App\Services\CacheManager;
-use PHPUnit\Framework\MockObject\MockObject;
 use Tests\TestCase;
 
 class CacheManagerTest extends TestCase
@@ -16,11 +15,12 @@ class CacheManagerTest extends TestCase
     {
         parent::setUp();
         
-        $config = $this->createMock(\App\Config\ConfigInterface::class);
+        $config = $this->createMock(ConfigInterface::class);
         $config->method('getDefaultCacheTtl')->willReturn(3600);
         $config->method('getLocalCacheMaxSize')->willReturn(3);
         
-        $this->cacheManager = new CacheManager(null, $config);
+        $external = $this->createMock(\Phalcon\Cache\Cache::class);
+        $this->cacheManager = new CacheManager($external, $config);
     }
 
     public function testLruEviction(): void
@@ -62,11 +62,12 @@ class CacheManagerTest extends TestCase
 
     public function testCacheSizeLimit(): void
     {
-        $config = $this->createMock(\App\Config\ConfigInterface::class);
+        $config = $this->createMock(ConfigInterface::class);
         $config->method('getDefaultCacheTtl')->willReturn(3600);
         $config->method('getLocalCacheMaxSize')->willReturn(2);
         
-        $cacheManager = new CacheManager(null, $config);
+        $external = $this->createMock(\Phalcon\Cache\Cache::class);
+        $cacheManager = new CacheManager($external, $config);
         
         $cacheManager->set('key1', 'value1');
         $cacheManager->set('key2', 'value2');

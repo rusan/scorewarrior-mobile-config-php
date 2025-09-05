@@ -30,7 +30,7 @@ class MtimeCacheService
             return (int) @filemtime($filePath);
         }
 
-        $cacheKey = CacheKeyBuilder::mtime($filePath);
+        $cacheKey = CacheKeyBuilder::fileMtime($filePath);
         
 
         $cached = $this->cacheManager->get($cacheKey, 'mtime');

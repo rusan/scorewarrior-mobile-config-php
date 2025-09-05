@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Config\ConfigInterface;
-use App\Config\DependencyNames;
 use App\Services\DependencyTypeRegistry;
 use App\Contracts\LoggerInterface;
 use App\Utils\CacheKeyBuilder;
@@ -38,7 +37,7 @@ class ResolverService
         }
         
         $mtime = $this->getMtimeForType($dependencyType, $platform);
-        $cacheKey = CacheKeyBuilder::resolver($platform, $appVersion, null, null, $mtime, $dependencyType);
+        $cacheKey = CacheKeyBuilder::resolverResult($platform, $appVersion, null, null, $mtime, $dependencyType);
 
         $cachedResult = $this->cacheManager->get($cacheKey, 'resolver');
         if ($cachedResult !== null) {
@@ -71,8 +70,8 @@ class ResolverService
         $res = ['version' => $best, 'hash' => $map[$best]];
 
         $ttlSettings = $this->config->getMtimeCacheTTLSettings();
-        $this->logger->logCacheSet($cacheKey, 'resolver', $ttlSettings['general']);
-        $this->cacheManager->set($cacheKey, $res, 'resolver', $ttlSettings['general']);
+        $this->logger->logCacheSet($cacheKey, 'resolver', $ttlSettings->general);
+        $this->cacheManager->set($cacheKey, $res, 'resolver', $ttlSettings->general);
 
         return $res;
     }

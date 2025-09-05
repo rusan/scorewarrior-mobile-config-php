@@ -5,6 +5,6 @@ namespace App\Config;
 
 class ValidationConstants
 {
-    public const VALID_PLATFORMS = ['android', 'ios'];
+    public const VALID_PLATFORMS = ['android' => true, 'ios' => true];
     public const SEMVER_PATTERN = '/^\d+\.\d+\.\d+$/';
 }

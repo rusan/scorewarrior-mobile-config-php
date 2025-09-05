@@ -31,30 +31,16 @@ class ApplicationBootstrap
     
     private static function initializeLogging(): void
     {
-        // Create a minimal config for validation during bootstrap
-        $dependencyTypeRegistry = new \App\Services\DependencyTypeRegistry();
-        $urlsServiceProvider = function () {
-            throw new \RuntimeException('UrlsService not available during bootstrap');
-        };
-        
-        $config = \App\Config\Config::fromEnv($dependencyTypeRegistry, $urlsServiceProvider);
-        
-        // Validate configuration
-        $errors = $config->validate();
-        if (!empty($errors)) {
-            foreach ($errors as $error) {
-                error_log("Configuration error: $error");
-            }
-            throw new \RuntimeException('Invalid configuration: ' . implode(', ', $errors));
-        }
-        
-        Log::setLevel($config->getLogLevel());
+        $logLevel = getenv('APP_LOG_LEVEL') ?: \App\Config\Environment::DEFAULT_LOG_LEVEL;
+        $appEnv = getenv('APP_ENV') ?: \App\Config\Environment::DEFAULT_ENV;
 
-        if ($config->isTesting() || $config->isDevelopment()) {
+        Log::setLevel($logLevel);
+
+        if (\App\Config\Environment::isNonProduction($appEnv)) {
             error_reporting(E_ALL & ~E_NOTICE);
         }
     }
-    
+
     private static function registerProviders(Di $di): void
     {
         ServiceProvider::register($di);
@@ -64,41 +50,34 @@ class ApplicationBootstrap
     
     private static function registerMiddleware(Micro $app, Di $di): void
     {
-        $requestValidator = $di->getShared('requestValidator');
-        $parameterService = $di->getShared('requestParameterService');
-        $logger = $di->getShared('logger');
-        MiddlewareManager::createDefault($requestValidator, $parameterService, $logger)->register($app);
+        $requestValidator = $di->getShared(\App\Validators\RequestValidator::class);
+        $logger = $di->getShared(\App\Contracts\LoggerInterface::class);
+        MiddlewareManager::createDefault($requestValidator, $logger)->register($app);
     }
     
     private static function registerRoutes(Micro $app): void
     {
         $app->get('/health', function () use ($app) {
-            $service = $app->getDI()->getShared('healthService');
-            if ($service === null) {
-                throw new \RuntimeException('healthService not found in DI container');
-            }
+            $service = $app->getDI()->getShared(\App\Services\HealthService::class);
             $payload = $service->check();
             $payload['metrics'] = ['log_counters' => Log::getCounters()];
             return \App\Utils\Http::json(\App\Config\HttpStatusCodes::OK, $payload);
         });
         
         $app->get('/config', function () use ($app) {
-            $controller = $app->getDI()->get('configController');
-            if ($controller === null) {
-                throw new \RuntimeException('ConfigController not found in DI container');
-            }
+            $controller = $app->getDI()->getShared(\App\Controllers\ConfigController::class);
             return $controller->getConfig($app);
         });
 
         $app->get('/metrics', function () {
-            $counters = \App\Utils\Log::getCounters();
+            $counters = Log::getCounters();
             $lines = [];
             foreach ($counters as $name => $value) {
                 $metricName = preg_replace('/[^a-zA-Z0-9_]/', '_', $name);
                 $lines[] = sprintf('%s %d', $metricName, (int) $value);
             }
             $body = implode("\n", $lines) . "\n";
-            return \App\Utils\Http::text(200, $body);
+            return \App\Utils\Http::text(\App\Config\HttpStatusCodes::OK, $body);
         });
     }
 }

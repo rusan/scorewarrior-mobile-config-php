@@ -10,7 +10,7 @@ class ValidatorProvider
 {
     public static function register(Di $di): void
     {
-        $di->setShared('requestValidator', function () {
+        $di->setShared(RequestValidator::class, function () {
             return new RequestValidator();
         });
     }

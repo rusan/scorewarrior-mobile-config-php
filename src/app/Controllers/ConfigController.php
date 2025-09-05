@@ -6,64 +6,46 @@ namespace App\Controllers;
 use App\Config\RequestParameterNames;
 use App\Config\HttpStatusCodes;
 use App\Services\ConfigService;
-use App\Services\FixturesService;
-use App\Services\RequestParameterService;
-use App\Services\ResolverService;
 use App\Utils\Http;
 use App\Utils\Log;
-use Phalcon\Http\Request;
 use Phalcon\Mvc\Micro;
-
-final class ConfigController
+use Phalcon\Mvc\Controller;
+final class ConfigController extends Controller
 {
-    public function __construct(
-        private ConfigService $configService,
-        private FixturesService $fixturesService,
-        private ResolverService $resolverService,
-        private RequestParameterService $parameterService
-    ) {}
+    private ConfigService $configService;
+    
+    public function setConfigService(ConfigService $configService): void
+    {
+        $this->configService = $configService;
+    }
 
     public function getConfig(Micro $app): \Phalcon\Http\Response
     {
         $request = $app->request;
-        $params = $this->parameterService->extractConfigParameters($request);
-        
-        $platform = $params[RequestParameterNames::PLATFORM];
-        $appVer = $params[RequestParameterNames::APP_VERSION];
-        $assetsVer = $params[RequestParameterNames::ASSETS_VERSION];
-        $defsVer = $params[RequestParameterNames::DEFINITIONS_VERSION];
+        $platform = (string) $request->getQuery(RequestParameterNames::PLATFORM, null, '');
+        $appVer = (string) $request->getQuery(RequestParameterNames::APP_VERSION, null, '');
+        $assetsVer = $request->getQuery(RequestParameterNames::ASSETS_VERSION, null, null);
+        $defsVer = $request->getQuery(RequestParameterNames::DEFINITIONS_VERSION, null, null);
 
         Log::info('config_request', compact('platform', 'appVer', 'assetsVer', 'defsVer'));
         Log::incCounter('requests_total');
 
-        try {
-            $result = $this->configService->getConfig($appVer, $platform, $assetsVer, $defsVer);
-            
-            if ($result === null) {
-                Log::info('config_not_found', compact('platform','appVer','assetsVer','defsVer'));
-                Log::incCounter('config_not_found_total');
-                return Http::error(HttpStatusCodes::NOT_FOUND, "Configuration not found for appVersion {$appVer} ({$platform})");
-            }
-            
-            Log::info('config_resolved', [
-                'platform' => $platform,
-                'appVersion' => $appVer,
-                'assetsVersion' => $result[RequestParameterNames::ASSETS_VERSION]['version'],
-                'definitionsVersion' => $result[RequestParameterNames::DEFINITIONS_VERSION]['version'],
-            ]);
-            Log::incCounter('config_resolved_total');
-            
-            return Http::json(HttpStatusCodes::OK, $result);
-            
-        } catch (\Exception $e) {
-            Log::error('config_error', [
-                'message' => $e->getMessage(),
-                'platform' => $platform,
-                'appVer' => $appVer
-            ]);
-            Log::incCounter('config_error_total');
-            
-            return Http::error(HttpStatusCodes::INTERNAL_SERVER_ERROR, 'Internal server error');
+        $result = $this->configService->getConfig($appVer, $platform, $assetsVer, $defsVer);
+
+        if ($result === null) {
+            Log::info('config_not_found', compact('platform','appVer','assetsVer','defsVer'));
+            Log::incCounter('config_not_found_total');
+            return Http::error(HttpStatusCodes::NOT_FOUND, "Configuration not found for appVersion {$appVer} ({$platform})");
         }
+
+        Log::info('config_resolved', [
+            'platform' => $platform,
+            'appVersion' => $appVer,
+            'assetsVersion' => $result[RequestParameterNames::ASSETS_VERSION]['version'],
+            'definitionsVersion' => $result[RequestParameterNames::DEFINITIONS_VERSION]['version'],
+        ]);
+        Log::incCounter('config_resolved_total');
+
+        return Http::json(HttpStatusCodes::OK, $result);
     }
 }

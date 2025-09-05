@@ -23,16 +23,18 @@ class LoggingMiddleware extends AbstractMiddleware
         $rid = $request->getHeader('X-Request-Id') ?: uniqid('req_', true);
         Log::setRequestId($rid);
 
+        $params = $request->getQuery();
+        $params['clientIp'] = $request->getClientAddress();
         $this->logger->logRequestReceived(
             $request->getMethod(),
             $request->getURI(),
-            array_merge($_GET, ['clientIp' => $request->getClientAddress()])
+            $params
         );
         
         $logger = $this->logger;
         $app->after(function () use ($app, $t0, $logger) {
             $response = $app->response;
-            $statusCode = 200; // Default
+            $statusCode = \App\Config\HttpStatusCodes::OK; // Default
             
             if ($response && method_exists($response, 'getStatusCode')) {
                 $code = $response->getStatusCode();

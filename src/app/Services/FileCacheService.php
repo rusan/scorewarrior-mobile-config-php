@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Config\CacheTypes;
+use App\Config\ConfigInterface;
 use App\Contracts\LoggerInterface;
 use App\Utils\CacheKeyBuilder;
 
@@ -11,7 +12,7 @@ class FileCacheService
 {
 
     public function __construct(
-        private TTLConfigService $ttlConfig,
+        private ConfigInterface $config,
         private CacheManager $cacheManager,
         private MtimeCacheService $mtimeCacheService,
         private LoggerInterface $logger
@@ -44,7 +45,7 @@ class FileCacheService
             return [];
         }
 
-        $ttl = $this->ttlConfig->getTTLForCacheType($cacheType);
+        $ttl = $this->getTTLForCacheType($cacheType);
         $this->cacheManager->set($cacheKey, $decoded, $cacheType, $ttl);
 
         $this->logger->logFileLoaded($filePath, $mtime, strlen($content));
@@ -55,11 +56,21 @@ class FileCacheService
     {
         switch ($cacheType) {
             case CacheTypes::FIXTURES:
-                return CacheKeyBuilder::file($cacheType, $filePath, $mtime);
+                return CacheKeyBuilder::fileCacheKey($cacheType, $filePath, $mtime);
             case CacheTypes::URLS:
-                return CacheKeyBuilder::urls($mtime);
+                return CacheKeyBuilder::urlsConfig($mtime);
             default:
-                return CacheKeyBuilder::file($cacheType, $filePath, $mtime);
+                return CacheKeyBuilder::fileCacheKey($cacheType, $filePath, $mtime);
         }
+    }
+
+    private function getTTLForCacheType(string $cacheType): int
+    {
+        $settings = $this->config->getMtimeCacheTTLSettings();
+        return match ($cacheType) {
+            CacheTypes::FIXTURES => $settings->fixtures,
+            CacheTypes::URLS => $settings->urls,
+            default => $settings->general,
+        };
     }
 }

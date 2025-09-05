@@ -30,7 +30,7 @@ class RequestValidator
             throw new ValidationException('Platform parameter is required', HttpStatusCodes::BAD_REQUEST);
         }
 
-        if (!in_array($platform, ValidationConstants::VALID_PLATFORMS, true)) {
+        if (!isset(ValidationConstants::VALID_PLATFORMS[$platform])) {
             throw new ValidationException("Invalid platform: {$platform}", HttpStatusCodes::BAD_REQUEST);
         }
     }
@@ -60,7 +60,7 @@ class RequestValidator
 
     public function getValidPlatforms(): array
     {
-        return ValidationConstants::VALID_PLATFORMS;
+        return array_keys(ValidationConstants::VALID_PLATFORMS);
     }
 
     public function getSemVerPattern(): string
