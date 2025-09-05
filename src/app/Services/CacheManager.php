@@ -12,7 +12,7 @@ class CacheManager
     /** @var array<string, mixed> */
     private array $localCache = [];
     
-    /** @var array<string, int> */
+    /** @var array<string, float> */
     private array $accessTimes = [];
     
     private int $maxLocalCacheSize;

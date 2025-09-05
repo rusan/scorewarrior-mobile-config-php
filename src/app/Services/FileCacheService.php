@@ -55,11 +55,11 @@ class FileCacheService
     {
         switch ($cacheType) {
             case CacheTypes::FIXTURES:
-                return CacheKeyBuilder::file($cacheType, $filePath, $mtime);
+                return CacheKeyBuilder::fileCacheKey($cacheType, $filePath, $mtime);
             case CacheTypes::URLS:
-                return CacheKeyBuilder::urls($mtime);
+                return CacheKeyBuilder::urlsConfig($mtime);
             default:
-                return CacheKeyBuilder::file($cacheType, $filePath, $mtime);
+                return CacheKeyBuilder::fileCacheKey($cacheType, $filePath, $mtime);
         }
     }
 }

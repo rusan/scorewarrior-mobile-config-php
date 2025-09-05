@@ -2,8 +2,6 @@
 declare(strict_types=1);
 
 namespace App\Providers;
-
-use App\Config\ConfigFactory;
 use App\Config\ConfigInterface;
 use App\Services\CacheManager;
 use App\Services\ConfigService;

@@ -74,31 +74,25 @@ class ApplicationBootstrap
     {
         $app->get('/health', function () use ($app) {
             $service = $app->getDI()->getShared('healthService');
-            if ($service === null) {
-                throw new \RuntimeException('healthService not found in DI container');
-            }
             $payload = $service->check();
             $payload['metrics'] = ['log_counters' => Log::getCounters()];
             return \App\Utils\Http::json(\App\Config\HttpStatusCodes::OK, $payload);
         });
         
         $app->get('/config', function () use ($app) {
-            $controller = $app->getDI()->get('configController');
-            if ($controller === null) {
-                throw new \RuntimeException('ConfigController not found in DI container');
-            }
+            $controller = $app->getDI()->getShared('configController');
             return $controller->getConfig($app);
         });
 
         $app->get('/metrics', function () {
-            $counters = \App\Utils\Log::getCounters();
+            $counters = Log::getCounters();
             $lines = [];
             foreach ($counters as $name => $value) {
                 $metricName = preg_replace('/[^a-zA-Z0-9_]/', '_', $name);
                 $lines[] = sprintf('%s %d', $metricName, (int) $value);
             }
             $body = implode("\n", $lines) . "\n";
-            return \App\Utils\Http::text(200, $body);
+            return \App\Utils\Http::text(\App\Config\HttpStatusCodes::OK, $body);
         });
     }
 }

@@ -36,34 +36,22 @@ final class ConfigController
         Log::info('config_request', compact('platform', 'appVer', 'assetsVer', 'defsVer'));
         Log::incCounter('requests_total');
 
-        try {
-            $result = $this->configService->getConfig($appVer, $platform, $assetsVer, $defsVer);
-            
-            if ($result === null) {
-                Log::info('config_not_found', compact('platform','appVer','assetsVer','defsVer'));
-                Log::incCounter('config_not_found_total');
-                return Http::error(HttpStatusCodes::NOT_FOUND, "Configuration not found for appVersion {$appVer} ({$platform})");
-            }
-            
-            Log::info('config_resolved', [
-                'platform' => $platform,
-                'appVersion' => $appVer,
-                'assetsVersion' => $result[RequestParameterNames::ASSETS_VERSION]['version'],
-                'definitionsVersion' => $result[RequestParameterNames::DEFINITIONS_VERSION]['version'],
-            ]);
-            Log::incCounter('config_resolved_total');
-            
-            return Http::json(HttpStatusCodes::OK, $result);
-            
-        } catch (\Exception $e) {
-            Log::error('config_error', [
-                'message' => $e->getMessage(),
-                'platform' => $platform,
-                'appVer' => $appVer
-            ]);
-            Log::incCounter('config_error_total');
-            
-            return Http::error(HttpStatusCodes::INTERNAL_SERVER_ERROR, 'Internal server error');
+        $result = $this->configService->getConfig($appVer, $platform, $assetsVer, $defsVer);
+
+        if ($result === null) {
+            Log::info('config_not_found', compact('platform','appVer','assetsVer','defsVer'));
+            Log::incCounter('config_not_found_total');
+            return Http::error(HttpStatusCodes::NOT_FOUND, "Configuration not found for appVersion {$appVer} ({$platform})");
         }
+
+        Log::info('config_resolved', [
+            'platform' => $platform,
+            'appVersion' => $appVer,
+            'assetsVersion' => $result[RequestParameterNames::ASSETS_VERSION]['version'],
+            'definitionsVersion' => $result[RequestParameterNames::DEFINITIONS_VERSION]['version'],
+        ]);
+        Log::incCounter('config_resolved_total');
+
+        return Http::json(HttpStatusCodes::OK, $result);
     }
 }

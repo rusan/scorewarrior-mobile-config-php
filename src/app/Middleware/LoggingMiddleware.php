@@ -23,10 +23,12 @@ class LoggingMiddleware extends AbstractMiddleware
         $rid = $request->getHeader('X-Request-Id') ?: uniqid('req_', true);
         Log::setRequestId($rid);
 
+        $params = $request->getQuery();
+        $params['clientIp'] = $request->getClientAddress();
         $this->logger->logRequestReceived(
             $request->getMethod(),
             $request->getURI(),
-            array_merge($_GET, ['clientIp' => $request->getClientAddress()])
+            $params
         );
         
         $logger = $this->logger;

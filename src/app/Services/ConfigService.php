@@ -19,7 +19,7 @@ class ConfigService
 
     public function getConfig(string $appVersion, string $platform, ?string $assetsVersion, ?string $definitionsVersion): ?array
     {
-        $cacheKey = CacheKeyBuilder::config($platform, $appVersion, $assetsVersion, $definitionsVersion);
+        $cacheKey = CacheKeyBuilder::configResponse($platform, $appVersion, $assetsVersion, $definitionsVersion);
         
         return $this->cacheManager->remember($cacheKey, function() use ($appVersion, $platform, $assetsVersion, $definitionsVersion) {
             $result = [
@@ -48,7 +48,7 @@ class ConfigService
             }
             
             return $result;
-        }, 'config', 3600);
+        }, 'config', $this->config->getDefaultCacheTtl());
     }
     
     private function getUrlsForType(string $type): array
