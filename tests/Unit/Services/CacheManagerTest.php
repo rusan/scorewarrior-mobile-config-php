@@ -20,7 +20,8 @@ class CacheManagerTest extends TestCase
         $config->method('getDefaultCacheTtl')->willReturn(3600);
         $config->method('getLocalCacheMaxSize')->willReturn(3);
         
-        $this->cacheManager = new CacheManager(null, $config);
+        $external = $this->createMock(\Phalcon\Cache\Cache::class);
+        $this->cacheManager = new CacheManager($external, $config);
     }
 
     public function testLruEviction(): void
@@ -66,7 +67,8 @@ class CacheManagerTest extends TestCase
         $config->method('getDefaultCacheTtl')->willReturn(3600);
         $config->method('getLocalCacheMaxSize')->willReturn(2);
         
-        $cacheManager = new CacheManager(null, $config);
+        $external = $this->createMock(\Phalcon\Cache\Cache::class);
+        $cacheManager = new CacheManager($external, $config);
         
         $cacheManager->set('key1', 'value1');
         $cacheManager->set('key2', 'value2');

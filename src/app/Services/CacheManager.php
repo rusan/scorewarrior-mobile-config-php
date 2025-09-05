@@ -18,7 +18,7 @@ class CacheManager
     private int $maxLocalCacheSize;
 
     public function __construct(
-        private ?Cache $externalCache = null,
+        private Cache $externalCache,
         private ?ConfigInterface $config = null,
         private ?int $defaultTtl = null
     ) {
@@ -40,13 +40,11 @@ class CacheManager
             return $this->localCache[$key];
         }
 
-        if ($this->externalCache !== null) {
-            $value = $this->externalCache->get($key, null);
-            if ($value !== null) {
-                Log::info("{$type}_cache_hit", ['key' => $key]);
-                $this->setLocalCache($key, $value);
-                return $value;
-            }
+        $value = $this->externalCache->get($key, null);
+        if ($value !== null) {
+            Log::info("{$type}_cache_hit", ['key' => $key]);
+            $this->setLocalCache($key, $value);
+            return $value;
         }
 
         return null;
@@ -57,10 +55,8 @@ class CacheManager
         $this->setLocalCache($key, $value);
         Log::info("{$type}_local_cache_set", ['key' => $key]);
 
-        if ($this->externalCache !== null) {
-            $this->externalCache->set($key, $value, $ttl ?? $this->defaultTtl);
-            Log::info("{$type}_cache_set", ['key' => $key, 'ttl' => $ttl ?? $this->defaultTtl]);
-        }
+        $this->externalCache->set($key, $value, $ttl ?? $this->defaultTtl);
+        Log::info("{$type}_cache_set", ['key' => $key, 'ttl' => $ttl ?? $this->defaultTtl]);
     }
 
     public function delete(string $key, string $type = 'cache'): void
@@ -69,10 +65,8 @@ class CacheManager
         unset($this->accessTimes[$key]);
         Log::info("{$type}_local_cache_cleared", ['key' => $key]);
 
-        if ($this->externalCache !== null) {
-            $this->externalCache->delete($key);
-            Log::info("{$type}_cache_cleared", ['key' => $key]);
-        }
+        $this->externalCache->delete($key);
+        Log::info("{$type}_cache_cleared", ['key' => $key]);
     }
 
     public function clearLocal(string $type = 'cache'): void

@@ -6,7 +6,7 @@ namespace Tests\Unit\Services;
 use App\Services\CacheManager;
 use App\Services\FileCacheService;
 use App\Services\MtimeCacheService;
-use App\Services\TTLConfigService;
+use App\Config\ConfigInterface;
 use App\Utils\Log;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class FileCacheServiceTest extends TestCase
 {
     private FileCacheService $fileCacheService;
-    private TTLConfigService&MockObject $ttlConfig;
+    private ConfigInterface&MockObject $config;
     private CacheManager&MockObject $cacheManager;
     private MtimeCacheService&MockObject $mtimeCacheService;
     private string $tempFilePath;
@@ -27,19 +27,20 @@ class FileCacheServiceTest extends TestCase
             'test_key' => 'test_value',
             'nested' => ['key' => 'value']
         ]));
-        $this->ttlConfig = $this->createMock(TTLConfigService::class);
-        $this->ttlConfig->method('getTTLForCacheType')->willReturnMap([
-            ['fixtures', 3600],
-            ['urls', 7200],
-            ['unknown', 1800]
+        $this->config = $this->createMock(ConfigInterface::class);
+        $this->config->method('getMtimeCacheTTLSettings')->willReturn([
+            'fixtures' => 3600,
+            'urls' => 7200,
+            'general' => 1800,
         ]);
+        $this->config->method('getMtimeCacheGeneralTtl')->willReturn(1800);
 
         $this->cacheManager = $this->createMock(CacheManager::class);
         $this->mtimeCacheService = $this->createMock(MtimeCacheService::class);
         $this->mtimeCacheService->method('getMtime')->willReturn(1234567890);
         $logger = $this->createMock(\App\Contracts\LoggerInterface::class);
         $this->fileCacheService = new FileCacheService(
-            $this->ttlConfig,
+            $this->config,
             $this->cacheManager,
             $this->mtimeCacheService,
             $logger

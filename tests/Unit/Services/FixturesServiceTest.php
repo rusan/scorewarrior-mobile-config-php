@@ -48,12 +48,14 @@ class FixturesServiceTest extends TestCase
             });
         $this->mtimeCache = new MtimeCacheService($this->config, $this->cacheManager);
         $configForTtl = $this->createMock(\App\Config\ConfigInterface::class);
-        $configForTtl->method('getMtimeCacheFixturesTtl')->willReturn(3600);
-        $configForTtl->method('getMtimeCacheUrlsTtl')->willReturn(60);
+        $configForTtl->method('getMtimeCacheTTLSettings')->willReturn([
+            'fixtures' => 3600,
+            'urls' => 60,
+            'general' => 5,
+        ]);
         $configForTtl->method('getMtimeCacheGeneralTtl')->willReturn(5);
-        $ttlConfig = new \App\Services\TTLConfigService($configForTtl);
         $logger = $this->createMock(\App\Contracts\LoggerInterface::class);
-        $this->fileCacheService = new \App\Services\FileCacheService($ttlConfig, $this->cacheManager, $this->mtimeCache, $logger);
+        $this->fileCacheService = new \App\Services\FileCacheService($configForTtl, $this->cacheManager, $this->mtimeCache, $logger);
         $fixturesLogger = $this->createMock(\App\Contracts\LoggerInterface::class);
         $this->fixturesService = new FixturesService(
             ['test' => $this->tempFilePath],
