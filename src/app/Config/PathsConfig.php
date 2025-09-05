@@ -62,5 +62,3 @@ final class PathsConfig
         return $this->dataPath . '/' . DataFileNames::DEFINITIONS_FIXTURES;
     }
 }
-
-

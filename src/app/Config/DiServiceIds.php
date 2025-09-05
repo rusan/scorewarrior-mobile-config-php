@@ -11,5 +11,3 @@ final class DiServiceIds
     public const FILTER = 'filter';
     public const CACHE = 'cache';
 }
-
-

@@ -41,5 +41,3 @@ final class Environment
         return isset(self::DEVELOPMENT[$e]) || isset(self::TESTING[$e]);
     }
 }
-
-

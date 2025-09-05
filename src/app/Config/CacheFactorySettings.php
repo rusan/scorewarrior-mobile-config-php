@@ -11,5 +11,3 @@ final class CacheFactorySettings
         public readonly string $prefix
     ) {}
 }
-
-

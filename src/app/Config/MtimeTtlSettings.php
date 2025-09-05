@@ -11,5 +11,3 @@ final class MtimeTtlSettings
         public readonly int $general
     ) {}
 }
-
-
