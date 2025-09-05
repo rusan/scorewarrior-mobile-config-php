@@ -40,7 +40,7 @@ class ApplicationBootstrap
             error_reporting(E_ALL & ~E_NOTICE);
         }
     }
-    
+
     private static function registerProviders(Di $di): void
     {
         ServiceProvider::register($di);

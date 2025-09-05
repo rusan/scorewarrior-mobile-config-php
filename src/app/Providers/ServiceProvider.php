@@ -11,7 +11,6 @@ use App\Services\MtimeCacheService;
 use App\Services\HealthService;
 use App\Services\RequestParameterService;
 use App\Services\ResolverService;
-use App\Services\TTLConfigService;
 use App\Services\UrlsService;
 use Phalcon\Cache\AdapterFactory;
 use Phalcon\Cache\CacheFactory;
@@ -67,10 +66,7 @@ class ServiceProvider
             return \App\Config\Config::fromEnv($dependencyTypeRegistry, $urlsServiceProvider);
         });
 
-        $di->setShared('ttlConfigService', function () use ($di) {
-            $config = $di->getShared('config');
-            return new TTLConfigService($config);
-        });
+        // ttlConfigService removed: FileCacheService uses ConfigInterface directly
     }
 
     private static function registerCacheServices(Di $di): void
@@ -103,11 +99,11 @@ class ServiceProvider
         });
 
         $di->setShared('fileCacheService', function () use ($di) {
-            $ttlConfig = $di->getShared('ttlConfigService');
+            $config = $di->getShared('config');
             $cacheManager = $di->getShared('cacheManager');
             $mtimeCache = $di->getShared('mtimeCacheService');
             $logger = $di->getShared('logger');
-            return new FileCacheService($ttlConfig, $cacheManager, $mtimeCache, $logger);
+            return new FileCacheService($config, $cacheManager, $mtimeCache, $logger);
         });
     }
 
