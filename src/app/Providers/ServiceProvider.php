@@ -159,9 +159,8 @@ class ServiceProvider
         $di->setShared(\App\Services\HealthService::class, function () use ($di) {
             /** @var \App\Config\ConfigInterface $config */
             $config = $di->getShared(\App\Config\ConfigInterface::class);
-            $fileCacheService = $di->getShared(\App\Services\FileCacheService::class);
             $mtimeCacheService = $di->getShared(\App\Services\MtimeCacheService::class);
-            return new HealthService($config, $fileCacheService, $mtimeCacheService);
+            return new HealthService($config, $mtimeCacheService);
         });
     }
 }
