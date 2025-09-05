@@ -1,7 +1,6 @@
 FROM php:8.2-fpm-alpine3.17
 
 ARG PHALCON_VERSION=5.9.3
-ARG CACHE_BUST=1
 
 # Установка Phalcon и базовых зависимостей
 RUN set -xe && \
@@ -61,7 +60,6 @@ RUN composer dump-autoload || true
 COPY phpunit.xml /local/phpunit.xml
 COPY src/ /local/src/
 COPY tests/ /local/tests/
-RUN echo "Cache bust: $CACHE_BUST"
     
 # Создаем точку монтирования для локальных данных
 RUN mkdir -p /local/data
