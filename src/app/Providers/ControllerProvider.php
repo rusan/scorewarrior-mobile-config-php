@@ -14,8 +14,7 @@ class ControllerProvider
             return new ConfigController(
                 $di->getShared('configService'),
                 $di->getShared('fixturesService'),
-                $di->getShared('resolverService'),
-                $di->getShared('requestParameterService')
+                $di->getShared('resolverService')
             );
         });
     }

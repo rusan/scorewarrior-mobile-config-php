@@ -7,7 +7,6 @@ use App\Config\RequestParameterNames;
 use App\Config\HttpStatusCodes;
 use App\Services\ConfigService;
 use App\Services\FixturesService;
-use App\Services\RequestParameterService;
 use App\Services\ResolverService;
 use App\Utils\Http;
 use App\Utils\Log;
@@ -19,19 +18,16 @@ final class ConfigController
     public function __construct(
         private ConfigService $configService,
         private FixturesService $fixturesService,
-        private ResolverService $resolverService,
-        private RequestParameterService $parameterService
+        private ResolverService $resolverService
     ) {}
 
     public function getConfig(Micro $app): \Phalcon\Http\Response
     {
         $request = $app->request;
-        $params = $this->parameterService->extractConfigParameters($request);
-        
-        $platform = $params[RequestParameterNames::PLATFORM];
-        $appVer = $params[RequestParameterNames::APP_VERSION];
-        $assetsVer = $params[RequestParameterNames::ASSETS_VERSION];
-        $defsVer = $params[RequestParameterNames::DEFINITIONS_VERSION];
+        $platform = $request->getQuery(RequestParameterNames::PLATFORM, null, '');
+        $appVer = $request->getQuery(RequestParameterNames::APP_VERSION, null, '');
+        $assetsVer = $request->getQuery(RequestParameterNames::ASSETS_VERSION, null, null);
+        $defsVer = $request->getQuery(RequestParameterNames::DEFINITIONS_VERSION, null, null);
 
         Log::info('config_request', compact('platform', 'appVer', 'assetsVer', 'defsVer'));
         Log::incCounter('requests_total');

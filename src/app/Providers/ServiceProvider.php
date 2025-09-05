@@ -152,9 +152,7 @@ class ServiceProvider
             return new ConfigService($resolverService, $config, $cacheManager, $logger);
         });
 
-        $di->setShared('requestParameterService', function () {
-            return new RequestParameterService();
-        });
+        // requestParameterService removed — parameters are extracted directly where needed
 
         // AppConfig is now part of UnifiedConfig, no separate registration needed
 

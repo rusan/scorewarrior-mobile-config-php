@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Middleware;
 
 use App\Exceptions\ValidationException;
-use App\Services\RequestParameterService;
 use App\Utils\Log;
 use App\Validators\RequestValidator;
 use Phalcon\Mvc\Micro;
@@ -12,8 +11,7 @@ use Phalcon\Mvc\Micro;
 final class ValidationMiddleware extends AbstractMiddleware
 {
     public function __construct(
-        private RequestValidator $validator,
-        private RequestParameterService $parameterService
+        private RequestValidator $validator
     ) {}
 
     public function handle(Micro $app): bool
@@ -24,7 +22,12 @@ final class ValidationMiddleware extends AbstractMiddleware
 
         if (strpos($path, '/config') === 0) {
             try {
-                $params = $this->parameterService->extractConfigParameters($request);
+                $params = [
+                    \App\Config\RequestParameterNames::PLATFORM => $request->getQuery(\App\Config\RequestParameterNames::PLATFORM, null, ''),
+                    \App\Config\RequestParameterNames::APP_VERSION => $request->getQuery(\App\Config\RequestParameterNames::APP_VERSION, null, ''),
+                    \App\Config\RequestParameterNames::ASSETS_VERSION => $request->getQuery(\App\Config\RequestParameterNames::ASSETS_VERSION, null, null),
+                    \App\Config\RequestParameterNames::DEFINITIONS_VERSION => $request->getQuery(\App\Config\RequestParameterNames::DEFINITIONS_VERSION, null, null),
+                ];
                 $this->validator->validateConfigRequest($params);
             } catch (ValidationException $e) {
                 Log::warn('validation_failed', [
