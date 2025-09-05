@@ -12,10 +12,8 @@ class ControllerProvider
     {
         $di->setShared(ConfigController::class, function () use ($di) {
             $controller = new ConfigController();
-            $controller->setServices(
-                $di->getShared(\App\Services\ConfigService::class),
-                $di->getShared(\App\Services\FixturesService::class),
-                $di->getShared(\App\Services\ResolverService::class)
+            $controller->setConfigService(
+                $di->getShared(\App\Services\ConfigService::class)
             );
             return $controller;
         });
