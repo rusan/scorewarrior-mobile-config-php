@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Config;
 
 use App\Config\CacheTypes;
+use App\Config\CacheConfig;
+use App\Config\PathsConfig;
 use App\Services\DependencyTypeRegistry;
 use App\Services\UrlsService;
 use Closure;
@@ -15,7 +17,8 @@ use Closure;
 class Config implements ConfigInterface
 {
     // Environment mapping moved to App\Config\Environment
-    
+    private CacheConfig $cacheConfig;
+    private PathsConfig $pathsConfig;
     private array $mtimeCachePathMap;
     private array $fixturesPaths;
 
@@ -31,6 +34,18 @@ class Config implements ConfigInterface
         private DependencyTypeRegistry $dependencyTypeRegistry,
         private Closure $urlsServiceProvider
     ) {
+        // Initialize domain configs
+        $this->cacheConfig = new CacheConfig(
+            $this->mtimeCacheFixturesTtl,
+            $this->mtimeCacheUrlsTtl,
+            $this->mtimeCacheGeneralTtl,
+            $this->defaultCacheTtl,
+            $this->localCacheMaxSize
+        );
+        $this->pathsConfig = new PathsConfig(
+            $this->dataPath,
+            $this->dependencyTypeRegistry
+        );
         $this->initializePaths();
     }
 
@@ -57,14 +72,13 @@ class Config implements ConfigInterface
         $ttlSettings = $this->getMtimeCacheTTLSettings();
 
         $this->mtimeCachePathMap = [];
-        $this->fixturesPaths = [];
-        
-        $this->mtimeCachePathMap[$this->getUrlsConfigPath()] = $ttlSettings[CacheTypes::URLS];
-        
-        foreach ($this->dependencyTypeRegistry->getAll() as $type) {
-            $filePath = $this->dataPath . '/' . $type->getFileName();
+        // Fixtures paths derived from PathsConfig
+        $this->fixturesPaths = $this->pathsConfig->getFixturesPaths();
+
+        $this->mtimeCachePathMap[$this->pathsConfig->getUrlsConfigPath()] = $ttlSettings[CacheTypes::URLS];
+
+        foreach ($this->fixturesPaths as $name => $filePath) {
             $this->mtimeCachePathMap[$filePath] = $ttlSettings[CacheTypes::FIXTURES];
-            $this->fixturesPaths[$type->getName()] = $filePath;
         }
     }
 
@@ -109,43 +123,43 @@ class Config implements ConfigInterface
 
     public function getUrlsConfigPath(): string
     {
-        return $this->dataPath . '/' . DataFileNames::URLS_CONFIG;
+        return $this->pathsConfig->getUrlsConfigPath();
     }
 
     public function getAssetsFixturesPath(): string
     {
-        return $this->dataPath . '/' . DataFileNames::ASSETS_FIXTURES;
+        return $this->pathsConfig->getAssetsFixturesPath();
     }
 
     public function getDefinitionsFixturesPath(): string
     {
-        return $this->dataPath . '/' . DataFileNames::DEFINITIONS_FIXTURES;
+        return $this->pathsConfig->getDefinitionsFixturesPath();
     }
 
     // Cache TTL settings
     public function getMtimeCacheFixturesTtl(): int
     {
-        return $this->mtimeCacheFixturesTtl;
+        return $this->cacheConfig->getMtimeCacheFixturesTtl();
     }
 
     public function getMtimeCacheUrlsTtl(): int
     {
-        return $this->mtimeCacheUrlsTtl;
+        return $this->cacheConfig->getMtimeCacheUrlsTtl();
     }
 
     public function getMtimeCacheGeneralTtl(): int
     {
-        return $this->mtimeCacheGeneralTtl;
+        return $this->cacheConfig->getMtimeCacheGeneralTtl();
     }
 
     public function getDefaultCacheTtl(): int
     {
-        return $this->defaultCacheTtl;
+        return $this->cacheConfig->getDefaultCacheTtl();
     }
 
     public function getLocalCacheMaxSize(): int
     {
-        return $this->localCacheMaxSize;
+        return $this->cacheConfig->getLocalCacheMaxSize();
     }
 
     // ConfigInterface implementation
@@ -176,23 +190,7 @@ class Config implements ConfigInterface
 
     public function getCacheSettings(): array
     {
-        return match (true) {
-            $this->isProduction() => [
-                'adapter' => 'apcu',
-                'options' => [
-                    'defaultSerializer' => 'Php',
-                    'lifetime' => 3600,
-                ],
-                'prefix' => 'prod_cache_',
-            ],
-            default => [
-                'adapter' => 'memory',
-                'options' => [
-                    'lifetime' => 60,
-                ],
-                'prefix' => 'dev_cache_',
-            ],
-        };
+        return $this->cacheConfig->getCacheSettings($this->isProduction());
     }
 
     public function isDebugMode(): bool
@@ -202,11 +200,7 @@ class Config implements ConfigInterface
 
     public function getMtimeCacheTTLSettings(): array
     {
-        return [
-            'fixtures' => $this->mtimeCacheFixturesTtl,
-            'urls' => $this->mtimeCacheUrlsTtl,
-            'general' => $this->mtimeCacheGeneralTtl,
-        ];
+        return $this->cacheConfig->getMtimeCacheTTLSettings();
     }
 
     public function getMtimeCachePathMap(): array
